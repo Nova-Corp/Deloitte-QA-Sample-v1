@@ -630,7 +630,7 @@
         <p>Comprehensive Q&A covering Flutter, Dart, Swift, iOS, Security, Architecture & Coding — with real code snippets and interview tips.</p>
         <div class="hero-stats">
             <div class="stat">
-                <span class="stat-number">50+</span>
+                <span class="stat-number">39+</span>
                 <span class="stat-label">Questions</span>
             </div>
             <div class="stat">
@@ -1221,6 +1221,90 @@ let url = "\(AppConfig.current.baseURL)/users"</code></pre>
             </div>
         </div></div>
     </div>
+    <!-- Q: iOS Independence -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">09</span>
+            <h3>Can you handle the iOS side independently, or does another developer handle it? <span class="difficulty diff-hard">Senior Lead</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This is a standard senior developer question to verify if you can take an app from development to the Apple App Store without relying on an external iOS engineer. Here is the structured, authoritative answer:</p>
+
+            <h4>1. Native iOS Configuration &amp; Capabilities</h4>
+            <ul>
+                <li><strong>Privacy &amp; Permissions (<code>Info.plist</code>):</strong> Configuring required usage descriptions (Camera, Photo Library, Location Always/WhenInUse, Bluetooth Peripheral, App Tracking Transparency).</li>
+                <li><strong>Entitlements &amp; Capabilities:</strong> Enabling Push Notifications (APNs), Background Modes (fetch, remote-notification, audio), Associated Domains (Universal Links / Deep Linking), and In-App Purchases / Apple Pay.</li>
+            </ul>
+
+            <h4>2. Dependency Management &amp; Build Tooling</h4>
+            <ul>
+                <li><strong>CocoaPods &amp; SPM:</strong> Maintaining <code>Podfile</code>, resolving pod version conflicts, handling <code>pod install --repo-update</code>, and configuring modern Swift Package Manager dependencies.</li>
+                <li><strong>Xcode Build Configurations:</strong> Managing Schemes (Dev/Staging/Prod), Build Settings, bridging headers, and resolving compiler issues like <code>arm64</code> simulator architecture exclusions.</li>
+            </ul>
+
+            <h4>3. Native Swift/Objective-C Platform Bridges</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift &mdash; Native iOS Bridge in AppDelegate</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// AppDelegate.swift &mdash; Native iOS implementation
+@UIApplicationMain
+class AppDelegate: FlutterAppDelegate {
+    override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        let controller = window?.rootViewController as! FlutterViewController
+        let securityChannel = FlutterMethodChannel(
+            name: "com.enterprise.app/security",
+            binaryMessenger: controller.binaryMessenger
+        )
+
+        securityChannel.setMethodCallHandler { (call, result) in
+            switch call.method {
+            case "isJailbroken":
+                result(self.checkJailbreak())
+            case "getSecureToken":
+                result(KeychainHelper.getToken())
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
+
+        GeneratedPluginRegistrant.register(with: self)
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+
+    private func checkJailbreak() -> Bool {
+        #if targetEnvironment(simulator)
+        return false
+        #else
+        let paths = ["/Applications/Cydia.app", "/usr/sbin/sshd", "/bin/bash"]
+        return paths.contains { FileManager.default.fileExists(atPath: $0) }
+        #endif
+    }
+}</code></pre>
+            </div>
+
+            <h4>4. Certificates, Provisioning &amp; App Store Deployment</h4>
+            <ul>
+                <li><strong>Apple Developer Portal:</strong> Creating App IDs, generating CSRs, issuing Distribution Certificates, and managing Provisioning Profiles.</li>
+                <li><strong>CI/CD &amp; Fastlane:</strong> Using <code>fastlane match</code> for encrypted Git-backed certificate syncing across the dev team; automating TestFlight uploads.</li>
+                <li><strong>App Store Connect:</strong> Managing TestFlight internal/external testing tracks, filling Privacy Nutrition Labels, configuring Export Compliance (encryption declarations), and handling App Review guidelines.</li>
+            </ul>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Highlight your experience resolving common iOS release blockers: Apple Privacy Manifests (<code>PrivacyInfo.xcprivacy</code> required since Spring 2024), ATS (App Transport Security) exceptions, and Universal Links <code>apple-app-site-association</code> verification.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -1236,10 +1320,67 @@ let url = "\(AppConfig.current.baseURL)/users"</code></pre>
         <button class="tool-btn" onclick="toggleAll('section-flutter')">⊞ Expand All</button>
     </div>
 
-    <!-- Q1: Flutter Lifecycle -->
+    <!-- Q0: Flutter Full Basics -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
             <span class="qa-num">01</span>
+            <h3>Flutter Full Basics: Architecture, The Three Trees, BuildContext, and Keys <span class="difficulty diff-easy">Fundamental</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Interviewers ask this to test if you truly understand Flutter's internals rather than just assembling widgets.</p>
+
+            <h4>1. Architectural Layers</h4>
+            <ul>
+                <li><strong>Framework (Dart):</strong> Everything you touch daily &mdash; Material/Cupertino widgets, rendering, animation, gestures, and foundation services.</li>
+                <li><strong>Engine (C/C++):</strong> The muscle &mdash; handles Skia / Impeller graphic rendering (Vulkan on Android, Metal on iOS), Dart runtime/GC, text layout (HarfBuzz), and platform channel message dispatching.</li>
+                <li><strong>Embedder (Platform-Specific):</strong> Coordinates with the underlying OS (surface creation, thread coordination, native event loop, plugins). Written in Java/Kotlin (Android), Objective-C/Swift (iOS), and C++ (Desktop).</li>
+            </ul>
+
+            <h4>2. The Three Trees of Flutter</h4>
+            <table class="compare-table">
+                <thead><tr><th>Tree</th><th>Nature</th><th>Responsibility</th><th>Lifecycle</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Widget Tree</strong></td><td>Immutable, lightweight blueprints</td><td>Declares UI configuration (how UI should look)</td><td>Recreated frequently on every build</td></tr>
+                    <tr><td><strong>Element Tree</strong></td><td>Mutable, structural spine</td><td>Manages lifecycle, holds state, acts as the bridge between Widget and RenderObject</td><td>Persists across builds; reconciled via keys and runtime types</td></tr>
+                    <tr><td><strong>RenderObject Tree</strong></td><td>Mutable, heavy layout/paint objects</td><td>Computes constraints, sizing, layout, hit-testing, and drawing pixels on canvas</td><td>Only instantiated or updated when geometric/visual properties change</td></tr>
+                </tbody>
+            </table>
+
+            <h4>3. What is BuildContext Really?</h4>
+            <p><code>BuildContext</code> is <strong>literally the <code>Element</code></strong> corresponding to the widget in the Element tree. It gives the widget its relative position in the hierarchy, allowing methods like <code>Theme.of(context)</code> or <code>MediaQuery.of(context)</code> to climb up ancestors to find inherited data.</p>
+
+            <h4>4. Hot Reload vs Hot Restart</h4>
+            <ul>
+                <li><strong>Hot Reload:</strong> Injects updated Dart source code directly into the running Dart VM. Keeps app state intact; does <em>not</em> re-execute <code>initState()</code> or static initializers.</li>
+                <li><strong>Hot Restart:</strong> Re-compiles application code, clears the entire Dart VM memory/state, and re-executes from <code>main()</code> and fresh <code>initState()</code>.</li>
+            </ul>
+
+            <h4>5. Flutter Keys &mdash; When and Why?</h4>
+            <p>Keys preserve state when widgets move positions or when items are reordered, inserted, or removed from collections.</p>
+            <ul>
+                <li><code>ValueKey('user_123')</code> &mdash; Compares by equality of a primitive or string (ideal for list item IDs).</li>
+                <li><code>ObjectKey(userModel)</code> &mdash; Compares by object reference/identity.</li>
+                <li><code>UniqueKey()</code> &mdash; Generates a unique identity every build (forces complete recreation).</li>
+                <li><code>PageStorageKey('feed_scroll')</code> &mdash; Preserves scroll offset across tab switches.</li>
+                <li><code>GlobalKey&lt;FormState&gt;()</code> &mdash; Universally unique across the entire app; allows accessing state or RenderBox across separate subtrees (use sparingly due to performance overhead).</li>
+            </ul>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Explain that when <code>setState()</code> is called, Flutter does <strong>NOT</strong> redraw the entire screen. It marks the Element as dirty, walks down the tree, compares the new Widget's <code>runtimeType</code> and <code>key</code> with the existing Element. If identical, it only updates the existing Element and RenderObject, making Flutter's reconciliation algorithm <code>O(N)</code>.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+
+    <!-- Q1: Flutter Lifecycle -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
             <h3>Explain the Flutter Widget Lifecycle and App Lifecycle <span class="difficulty diff-medium">Important</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1319,7 +1460,7 @@ class _MyAppState extends State&lt;MyApp&gt; with WidgetsBindingObserver {
     <!-- Q2: Dart Single-Threaded -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">02</span>
+            <span class="qa-num">03</span>
             <h3>Dart is single-threaded. How can Flutter make API calls and show animations simultaneously? <span class="difficulty diff-hard">Advanced</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1380,10 +1521,159 @@ final result = await compute(parseJson, jsonString);</code></pre>
         </div></div>
     </div>
 
+    <!-- Q: 30-Second API UI Freezing -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>If an API takes 30 seconds to respond, how does the progress indicator continue running without freezing the UI? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This question tests your deep understanding of <strong>I/O versus CPU bounds</strong>, the <strong>Vsync render pipeline</strong>, and <strong>Dart's Event Loop</strong>.</p>
+
+            <h4>The Core Mechanics</h4>
+            <ol>
+                <li><strong>Asynchronous Non-Blocking Socket I/O:</strong>
+                    When you call <code>await http.get(...)</code> or <code>await dio.get(...)</code>, Dart's <code>HttpClient</code> hands the socket request down to the underlying C++ Engine, which registers an asynchronous socket event with the OS kernel (via <code>epoll</code> on Linux/Android or <code>kqueue</code> on iOS/macOS). Dart does <strong>not spin or poll</strong>; the main thread immediately returns control back to the Event Loop.
+                </li>
+                <li><strong>The Vsync 60fps/120fps Engine Pulse:</strong>
+                    The display hardware fires a Vsync pulse every 16.6ms (at 60Hz) or 8.3ms (at 120Hz). Flutter's <code>SchedulerBinding</code> listens to these pulses and schedules a frame.
+                </li>
+                <li><strong>Animation Ticker Execution:</strong>
+                    A <code>CircularProgressIndicator</code> operates on an <code>AnimationController</code> driven by a <code>Ticker</code>. On every single Vsync pulse, the Ticker fires, updates the rotation angle, marks the render object dirty via <code>markNeedsPaint()</code>, and draws the next frame on the canvas.
+                </li>
+                <li><strong>Event Queue Separation:</strong>
+                    During the entire 30 seconds, the event loop remains completely empty and free between Vsync ticks. When the API response finally arrives at second 30, the OS signals the engine, which queues a single I/O completion callback into the <strong>Event Queue</strong>. Dart then resumes your async function after the current frame finishes.
+                </li>
+            </ol>
+
+            <table class="compare-table">
+                <thead><tr><th>Operation Type</th><th>Example</th><th>Effect on UI Thread</th><th>Solution</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>I/O-Bound (Network/File)</strong></td><td>Waiting 30 seconds on REST API</td><td>✅ <strong>Zero jank / 60fps animations</strong> (Thread is idle)</td><td>Standard <code>async / await</code></td></tr>
+                    <tr><td><strong>CPU-Bound (Computation)</strong></td><td>Parsing a 50MB JSON string or AES encrypting a large file</td><td>❌ <strong>UI Freezes / Drops frames</strong> (Event loop is blocked)</td><td>Offload to <strong>Isolate</strong> via <code>Isolate.run()</code></td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Non-blocking vs Blocking</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// ✅ WON'T FREEZE: 30-second network call allows 60fps animations
+Future&lt;void&gt; fetchSlowApi() async {
+  setState(() => _isLoading = true); // Spinner starts animating via Ticker
+  
+  // OS handles network wait asynchronously; Dart event loop is 100% free!
+  final response = await dio.get('https://api.example.com/slow-30s-data');
+  
+  // ⚠️ WILL FREEZE if 50MB payload is parsed synchronously on main thread:
+  // final data = jsonDecode(response.data); // FREEZES UI FOR 800ms!
+
+  // ✅ CORRECT FIX for heavy computation:
+  final data = await Isolate.run(() => jsonDecode(response.data));
+
+  setState(() {
+    _data = data;
+    _isLoading = false;
+  });
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Clearly state: <em>"Network latency is waiting time, not computing time."</em> The UI freezes only when Dart's CPU instructions occupy the thread for more than 16ms (e.g. large JSON parsing, image filtering, heavy crypto), which is why CPU-heavy work requires <strong>Isolates</strong>.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+
+    <!-- Q: Threads & Background Processing -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>Have you worked with threads in your project? How do you handle background processing in Flutter? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Dart handles threading differently from Java/C++. In Dart, threads are encapsulated inside <strong>Isolates</strong>.</p>
+
+            <h4>Key Concepts of Dart Isolates</h4>
+            <ul>
+                <li><strong>No Shared Memory:</strong> Isolates do not share heap memory. There are no race conditions, synchronized blocks, or mutex deadlocks.</li>
+                <li><strong>Message-Passing Communication:</strong> Isolates communicate exclusively by passing serialized messages through <code>SendPort</code> and <code>ReceivePort</code>.</li>
+                <li><strong>Dedicated Event Loop:</strong> Every isolate has its own independent memory space and event loop.</li>
+            </ul>
+
+            <h4>When to Use Isolates</h4>
+            <ul>
+                <li>Parsing massive JSON payloads (&gt;1MB)</li>
+                <li>Cryptographic encryption, decryption, and hashing (AES, RSA, SHA-256)</li>
+                <li>Image manipulation, resizing, and PDF generation</li>
+                <li>Local database migrations or complex filtering of tens of thousands of records</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Isolate.run vs Two-Way Port Worker</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// 1️⃣ ONE-SHOT WORK: Modern Isolate.run (Dart 2.19+)
+Future&lt;List&lt;User&gt;&gt; parseLargeUsersJson(String rawJson) async {
+  // Spawns isolate, executes closure, returns result, shuts down isolate
+  return await Isolate.run&lt;List&lt;User&gt;&gt;(() {
+    final List&lt;dynamic&gt; list = jsonDecode(rawJson);
+    return list.map((j) => User.fromJson(j)).toList();
+  });
+}
+
+// 2️⃣ PERSISTENT WORKER ISOLATE (For streaming or continuous work)
+class HeavyWorker {
+  late SendPort _toIsolateSendPort;
+  final _receivePort = ReceivePort();
+
+  Future&lt;void&gt; start() async {
+    await Isolate.spawn(_workerEntrypoint, _receivePort.sendPort);
+    _toIsolateSendPort = await _receivePort.first as SendPort;
+  }
+
+  static void _workerEntrypoint(SendPort toMainSendPort) {
+    final workerReceivePort = ReceivePort();
+    toMainSendPort.send(workerReceivePort.sendPort);
+
+    workerReceivePort.listen((message) {
+      // Process task in background thread
+      final processed = performComplexMath(message);
+      toMainSendPort.send(processed);
+    });
+  }
+}</code></pre>
+            </div>
+
+            <h4>Background Execution When App is Minimized / Killed</h4>
+            <ul>
+                <li><strong><code>workmanager</code>:</strong> Uses Android's <code>WorkManager</code> and iOS's <code>BGAppRefreshTask</code> for guaranteed background jobs (periodic sync, data backup, cache cleanup) even when the app is killed.</li>
+                <li><strong><code>flutter_foreground_task</code>:</strong> Used for persistent foreground services on Android with an ongoing notification (e.g. turn-by-turn navigation, workout tracking, active Bluetooth sync).</li>
+            </ul>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Be sure to distinguish between <strong>concurrency</strong> (cooperative async/await on the event loop for I/O) and <strong>true parallelism</strong> (multiple OS threads running in parallel on multi-core CPUs via Dart Isolates).</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+
     <!-- Q3: Networking Library -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">03</span>
+            <span class="qa-num">06</span>
             <h3>Which networking libraries have you used in Flutter? Compare them. <span class="difficulty diff-easy">Fundamental</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1446,7 +1736,7 @@ final result = await compute(parseJson, jsonString);</code></pre>
     <!-- Q4: Pagination with State Preservation -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">04</span>
+            <span class="qa-num">07</span>
             <h3>With 90,000 items, if I scroll to index 89,910 then navigate away and back — does it show the same position or reset? <span class="difficulty diff-hard">Advanced</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1519,7 +1809,7 @@ class PaginationCubit extends Cubit&lt;PaginationState&gt; {
     <!-- Q5: Crashlytics -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">05</span>
+            <span class="qa-num">08</span>
             <h3>How do you integrate Firebase Crashlytics in Flutter? <span class="difficulty diff-medium">Important</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1572,7 +1862,7 @@ void logApiError(String endpoint, dynamic error) {
     <!-- Q6: Flutter vs Jetpack Compose -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">06</span>
+            <span class="qa-num">09</span>
             <h3>What is the difference between Flutter and Jetpack Compose? <span class="difficulty diff-medium">Important</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1604,7 +1894,7 @@ void logApiError(String endpoint, dynamic error) {
     <!-- Q7: APK Size -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">07</span>
+            <span class="qa-num">10</span>
             <h3>How do you reduce APK size in Flutter? <span class="difficulty diff-medium">Important</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1646,7 +1936,7 @@ flutter build appbundle --release</code></pre>
     <!-- Q8: Build Flavors -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">08</span>
+            <span class="qa-num">11</span>
             <h3>What are build flavors and why do we need them? <span class="difficulty diff-medium">Important</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1716,7 +2006,7 @@ void main() {
     <!-- Q9: MethodChannel -->
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
-            <span class="qa-num">09</span>
+            <span class="qa-num">12</span>
             <h3>How do you implement Flutter-to-Native communication using MethodChannel? <span class="difficulty diff-hard">Advanced</span></h3>
             <span class="qa-toggle">+</span>
         </div>
@@ -1998,6 +2288,90 @@ BlocProvider(
             </div>
         </div></div>
     </div>
+
+    <!-- Q: Dagger/Hilt vs Flutter DI -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>Compare Dagger/Hilt (Android) with Dependency Injection in Flutter <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Android engineers transitioning to Flutter often get asked how Android's compile-time DI compares to Flutter's ecosystem.</p>
+
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>Android (Dagger / Hilt)</th><th>Flutter (get_it + injectable)</th><th>Flutter (Riverpod)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Core Pattern</strong></td><td>Compile-time Dependency Injection</td><td>Service Locator with code-gen</td><td>Reactive Dependency Graph (IoC)</td></tr>
+                    <tr><td><strong>Validation</strong></td><td><strong>Compile-time</strong> (build fails if dependency missing)</td><td>Runtime resolution (build_runner generates code)</td><td><strong>Compile-time</strong> safety</td></tr>
+                    <tr><td><strong>Reflection Cost</strong></td><td>Zero (code generated via KSP/kapt)</td><td>Zero (direct factory lookups)</td><td>Zero</td></tr>
+                    <tr><td><strong>Lifecycle Binding</strong></td><td>Tightly bound to Android Lifecycle (<code>@ActivityScoped</code>, <code>@ViewModelScoped</code>)</td><td>Manual scope registration or disposal</td><td>Built-in <code>autoDispose</code> on widget exit</td></tr>
+                    <tr><td><strong>Boilerplate</strong></td><td>High (Modules, Components, Annotations)</td><td>Low (just register factories/singletons)</td><td>Very Low (functional providers)</td></tr>
+                    <tr><td><strong>Mocking / Testing</strong></td><td>Replaces components with TestModules</td><td><code>getIt.unregister()</code> &amp; register mock</td><td>Provider overrides in tests</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-kotlin"></span>Kotlin &mdash; Android Hilt DI</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-kotlin">@Module
+@InstallIn(SingletonComponent::class)
+object NetworkModule {
+    @Provides
+    @Singleton
+    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+        .baseUrl("https://api.example.com")
+        .build()
+
+    @Provides
+    @Singleton
+    fun provideUserApi(retrofit: Retrofit): UserApi = 
+        retrofit.create(UserApi::class.java)
+}
+
+// Constructor injection in Android ViewModel
+@HiltViewModel
+class UserViewModel @Inject constructor(
+    private val userApi: UserApi
+) : ViewModel()</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Flutter injectable DI</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">@module
+abstract class RegisterModule {
+  @lazySingleton
+  Dio get dio =&gt; Dio(BaseOptions(baseUrl: 'https://api.example.com'));
+}
+
+@lazySingleton
+class UserRepository {
+  final Dio _dio;
+  UserRepository(this._dio);
+}
+
+@injectable
+class UserBloc extends Bloc&lt;UserEvent, UserState&gt; {
+  final UserRepository _repository;
+  UserBloc(this._repository) : super(UserInitial()) { ... }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Explain that while Dagger/Hilt enforces compile-time dependency safety natively within Android's activity/fragment lifecycle, Flutter widgets are much more transient, making <strong><code>get_it</code> with constructor injection</strong> or <strong>Riverpod</strong> the preferred architectural standards in Flutter apps.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -2607,6 +2981,139 @@ class UserListScreen extends StatelessWidget {
             </div>
         </div></div>
     </div>
+
+    <!-- Q: Coroutines, StateFlow, SharedFlow, LiveData -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>Explain Coroutines and the difference between StateFlow, SharedFlow, and LiveData <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This is a core question for senior mobile developers with Android or Kotlin expertise.</p>
+
+            <h4>1. What are Kotlin Coroutines?</h4>
+            <p>Coroutines are <strong>lightweight cooperative threads</strong>. Thousands of coroutines can run on a handful of OS threads without memory overhead because suspending a function does not block the underlying thread &mdash; it simply preserves stack state and yields execution.</p>
+            <ul>
+                <li><strong>Dispatchers:</strong> <code>Dispatchers.Main</code> (UI updates), <code>Dispatchers.IO</code> (Network/Disk), <code>Dispatchers.Default</code> (Heavy CPU sorting/parsing).</li>
+                <li><strong>Structured Concurrency:</strong> Coroutines run inside a <code>CoroutineScope</code> (e.g. <code>viewModelScope</code>). If the parent scope is cancelled, all child coroutines cancel automatically, preventing memory leaks.</li>
+            </ul>
+
+            <h4>2. StateFlow vs SharedFlow vs LiveData</h4>
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>LiveData</th><th>StateFlow</th><th>SharedFlow</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Platform</strong></td><td>Android SDK only (UI-bound)</td><td>Pure Kotlin (KMP compatible)</td><td>Pure Kotlin (KMP compatible)</td></tr>
+                    <tr><td><strong>Initial Value</strong></td><td>Optional</td><td><strong>Mandatory</strong> (always has current state)</td><td>None (streams events)</td></tr>
+                    <tr><td><strong>Replay Buffer</strong></td><td>Replays last value on subscription</td><td>Always replays latest value (size=1)</td><td>Configurable (0 to N values)</td></tr>
+                    <tr><td><strong>Consecutive Values</strong></td><td>Emits every post, even identical</td><td>Emits only when value changes (distinctUntilChanged)</td><td>Emits all events</td></tr>
+                    <tr><td><strong>Thread Execution</strong></td><td>Always dispatches on Main thread</td><td>Dispatches on any Coroutine Dispatcher</td><td>Dispatches on any Coroutine Dispatcher</td></tr>
+                    <tr><td><strong>Best Use Case</strong></td><td>Legacy Android UI observation</td><td><strong>UI State</strong> (Loading, Loaded, Error)</td><td><strong>One-time Events</strong> (Snackbars, Navigation, Toasts)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-kotlin"></span>Kotlin &mdash; StateFlow &amp; SharedFlow in ViewModel</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-kotlin">class AuthViewModel(private val repository: AuthRepository) : ViewModel() {
+
+    // 1️⃣ STATEFLOW &mdash; for persistent UI state (has initial value)
+    private val _uiState = MutableStateFlow&lt;AuthUiState&gt;(AuthUiState.Idle)
+    val uiState: StateFlow&lt;AuthUiState&gt; = _uiState.asStateFlow()
+
+    // 2️⃣ SHAREDFLOW &mdash; for one-time ephemeral events (no initial value)
+    private val _eventChannel = MutableSharedFlow&lt;AuthEvent&gt;()
+    val eventChannel: SharedFlow&lt;AuthEvent&gt; = _eventChannel.asSharedFlow()
+
+    fun login(email: String, pass: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.value = AuthUiState.Loading
+            try {
+                val token = repository.login(email, pass)
+                _uiState.value = AuthUiState.Success
+                // One-time navigation event:
+                _eventChannel.emit(AuthEvent.NavigateToHome)
+            } catch (e: Exception) {
+                _uiState.value = AuthUiState.Error(e.message ?: "Failed")
+                // One-time snackbar event:
+                _eventChannel.emit(AuthEvent.ShowSnackbar("Invalid credentials"))
+            }
+        }
+    }
+}
+
+// In Fragment / Activity UI:
+lifecycleScope.launch {
+    repeatOnLifecycle(Lifecycle.State.STARTED) {
+        launch { viewModel.uiState.collect { state -&gt; updateUi(state) } }
+        launch { viewModel.eventChannel.collect { event -&gt; handleEvent(event) } }
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Always mention <strong><code>repeatOnLifecycle</code></strong>! In Android, observing Flows directly without <code>repeatOnLifecycle(Lifecycle.State.STARTED)</code> continues collecting in the background when the app is minimized, wasting CPU and battery. LiveData handled this automatically, but with StateFlow/SharedFlow, <code>repeatOnLifecycle</code> is the modern best practice.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+
+    <!-- Q: How to Explain Your Project -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>How do you explain your project and architecture in an interview? <span class="difficulty diff-hard">Flagship Lead</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Interviewers start with <em>"Tell me about your current project"</em> to assess your communication, architectural maturity, and hands-on contributions. Use this <strong>5-Stage Senior Framework</strong>:</p>
+
+            <h4>1. Executive Overview &amp; Business Context (30-45 seconds)</h4>
+            <p><em>"In my current role, I lead mobile architecture for a enterprise fintech application serving over 500,000 monthly active users. The app handles digital onboarding, real-time banking transactions, biometric authentication, and card management under strict PCI-DSS and regulatory compliance."</em></p>
+
+            <h4>2. Architecture &amp; Tech Stack (60 seconds)</h4>
+            <ul>
+                <li><strong>Core Paradigm:</strong> <em>"We adopted a <strong>Feature-First Clean Architecture</strong> pattern layered into Presentation, Domain, and Data."</em></li>
+                <li><strong>State Management:</strong> <em>"We utilized <strong>BLoC</strong> for predictable unidirectional data flow (Events &rarr; BLoC &rarr; States), providing clear traceability, event debouncing, and thorough unit testing."</em></li>
+                <li><strong>Networking &amp; Security:</strong> <em>"Dio client with custom interceptors for automatic JWT token refreshes, certificate public key (SPKI) pinning, and AES-256-GCM payload encryption for sensitive transactions."</em></li>
+                <li><strong>Local Storage:</strong> <em>"Encrypted Hive/SecureStorage for offline-first caching and session persistence."</em></li>
+            </ul>
+
+            <h4>3. Your Individual Ownership &amp; Core Contributions</h4>
+            <p>Don't just say <em>"we built screens"</em>. Detail high-impact technical initiatives:</p>
+            <ul>
+                <li><em>"Designed and implemented the <strong>end-to-end payment gateway bridge</strong> connecting Flutter via MethodChannels to native Android/iOS biometric hardware and 3D-Secure SDKs."</em></li>
+                <li><em>"Implemented <strong>zero-downtime SSL Pinning</strong> with dynamic remote fallback to ensure annual server certificate rotations never brick installed mobile apps."</em></li>
+                <li><em>"Refactored our infinite list pagination to support <strong>cursor-based streaming with automatic scroll position restoration</strong>, dropping list memory consumption by 40%."</em></li>
+            </ul>
+
+            <h4>4. Deep Dive Problem Solving (STAR Method Example)</h4>
+            <div class="tip-box interview">
+                <span class="tip-icon">🎯</span>
+                <div class="tip-content">
+                    <strong>STAR Example &mdash; Handling 60fps Frame Drops on Heavy Payloads</strong>
+                    <p><strong>Situation:</strong> Users reported stuttering and dropped frames during dashboard loads with large encrypted JSON transaction histories.<br>
+                    <strong>Task:</strong> Eliminate UI freeze without delaying API response processing.<br>
+                    <strong>Action:</strong> Profiling via Flutter DevTools revealed synchronous JSON deserialization and AES decryption were blocking the Dart main thread for 400ms. I migrated all cryptographic and JSON transformation workloads into dedicated <strong>Dart Isolates via <code>Isolate.run()</code></strong>, and enabled <code>itemExtent</code> with caching on the transaction list.<br>
+                    <strong>Result:</strong> Smooth 60fps rendering, zero dropped frames, and app crash rate dropped from 1.4% to under 0.05%.</p>
+                </div>
+            </div>
+
+            <h4>5. CI/CD, Testing &amp; Observability</h4>
+            <ul>
+                <li><strong>Testing:</strong> Unit tests for all BLoCs &amp; repositories with <code>mocktail</code>/<code>bloc_test</code> targeting 85%+ business logic coverage.</li>
+                <li><strong>CI/CD:</strong> GitHub Actions running lint analysis, automated tests, Fastlane builds, and auto-deploying to Firebase App Distribution and TestFlight.</li>
+                <li><strong>Monitoring:</strong> Firebase Crashlytics with custom breadcrumb keys, Datadog/Sentry for real-time network latency and error telemetry.</li>
+            </ul>
+        </div></div>
+    </div>
+
 </div>
 
 <!-- ═══════════════════════════════════════════════ -->
