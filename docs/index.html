@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Developer Interview Prep — Flutter, Dart, Swift & iOS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/dart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/kotlin.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a78bfa;
+            --accent-green: #4ade80;
+            --accent-orange: #fb923c;
+            --accent-pink: #f472b6;
+            --accent-cyan: #22d3ee;
+            --accent-red: #f87171;
+            --border: #334155;
+            --code-bg: #0d1117;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            --radius: 12px;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-4: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            --gradient-5: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        /* ─── HERO ─── */
+        .hero {
+            position: relative;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 4rem 2rem;
+            overflow: hidden;
+            background: radial-gradient(ellipse at 20% 50%, rgba(56,189,248,0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 50%, rgba(167,139,250,0.15) 0%, transparent 50%),
+                        var(--bg-primary);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='g' width='60' height='60' patternUnits='userSpaceOnUse'%3E%3Cpath d='M60 0H0v60' fill='none' stroke='%23ffffff08' stroke-width='.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        .hero-content { position: relative; z-index: 1; max-width: 800px; }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            background: rgba(56,189,248,0.1);
+            border: 1px solid rgba(56,189,248,0.3);
+            color: var(--accent-blue);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #38bdf8 50%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ─── NAV ─── */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(15,23,42,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 0;
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            gap: 0;
+        }
+
+        .nav-inner::-webkit-scrollbar { display: none; }
+
+        .nav-btn {
+            flex-shrink: 0;
+            padding: 14px 22px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover { color: var(--text-primary); }
+        .nav-btn.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* ─── MAIN ─── */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* ─── SECTIONS ─── */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* ─── Q&A CARDS ─── */
+        .qa-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 1.25rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .qa-card:hover {
+            border-color: rgba(56,189,248,0.3);
+            box-shadow: 0 0 30px rgba(56,189,248,0.05);
+        }
+
+        .qa-question {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 20px 24px;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .qa-question:hover { background: rgba(255,255,255,0.02); }
+
+        .qa-num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .qa-question h3 {
+            flex: 1;
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .qa-toggle {
+            flex-shrink: 0;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: all 0.3s;
+            margin-top: 2px;
+        }
+
+        .qa-card.open .qa-toggle {
+            transform: rotate(45deg);
+            color: var(--accent-blue);
+            background: rgba(56,189,248,0.1);
+        }
+
+        .qa-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .qa-card.open .qa-answer { max-height: 5000px; }
+
+        .qa-answer-inner {
+            padding: 0 24px 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .qa-answer-inner p {
+            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .qa-answer-inner strong { color: var(--text-primary); }
+
+        .qa-answer-inner ul, .qa-answer-inner ol {
+            margin: 0.75rem 0 1rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .qa-answer-inner li { margin-bottom: 0.5rem; }
+
+        .qa-answer-inner h4 {
+            color: var(--accent-blue);
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin: 1.25rem 0 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qa-answer-inner h4::before {
+            content: '▸';
+            color: var(--accent-purple);
+        }
+
+        /* ─── KEY POINT PILL ─── */
+        .key-point {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(74,222,128,0.1);
+            border: 1px solid rgba(74,222,128,0.2);
+            color: var(--accent-green);
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 0 4px 4px 0;
+        }
+
+        /* ─── COMPARISON TABLE ─── */
+        .compare-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin: 1rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .compare-table th {
+            background: rgba(56,189,248,0.1);
+            color: var(--accent-blue);
+            padding: 12px 16px;
+            text-align: left;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .compare-table td {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .compare-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+        /* ─── CODE BLOCKS ─── */
+        .code-block {
+            margin: 1rem 0;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-lang {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .code-lang .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-dart { background: var(--accent-blue); }
+        .dot-swift { background: var(--accent-orange); }
+        .dot-kotlin { background: var(--accent-purple); }
+        .dot-yaml { background: var(--accent-green); }
+
+        .copy-btn {
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 16px;
+            overflow-x: auto;
+            background: var(--code-bg) !important;
+        }
+
+        .code-block code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        /* ─── TIP BOX ─── */
+        .tip-box {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 1px solid;
+        }
+
+        .tip-box.interview {
+            background: rgba(56,189,248,0.05);
+            border-color: rgba(56,189,248,0.2);
+        }
+
+        .tip-box.warning {
+            background: rgba(251,146,60,0.05);
+            border-color: rgba(251,146,60,0.2);
+        }
+
+        .tip-box.success {
+            background: rgba(74,222,128,0.05);
+            border-color: rgba(74,222,128,0.2);
+        }
+
+        .tip-icon {
+            flex-shrink: 0;
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+
+        .tip-content { flex: 1; }
+
+        .tip-content strong {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .tip-box.interview .tip-content strong { color: var(--accent-blue); }
+        .tip-box.warning .tip-content strong { color: var(--accent-orange); }
+        .tip-box.success .tip-content strong { color: var(--accent-green); }
+
+        .tip-content p {
+            font-size: 0.9rem;
+            margin: 0 !important;
+        }
+
+        /* ─── DIFFICULTY BADGE ─── */
+        .difficulty {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .diff-easy { background: rgba(74,222,128,0.15); color: var(--accent-green); }
+        .diff-medium { background: rgba(251,146,60,0.15); color: var(--accent-orange); }
+        .diff-hard { background: rgba(248,113,113,0.15); color: var(--accent-red); }
+
+        /* ─── EXPAND ALL ─── */
+        .toolbar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .tool-btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tool-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-primary);
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 3rem 1rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a { color: var(--accent-blue); text-decoration: none; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .hero { min-height: 50vh; padding: 3rem 1.5rem; }
+            .hero h1 { font-size: 2rem; }
+            .container { padding: 1.5rem 1rem; }
+            .qa-question { padding: 16px; }
+            .qa-answer-inner { padding: 0 16px 16px; padding-top: 16px; }
+            .compare-table { font-size: 0.85rem; }
+            .hero-stats { gap: 1.5rem; }
+        }
+
+        /* Search */
+        .search-box {
+            max-width: 500px;
+            margin: 2rem auto 0;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 20px 14px 48px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+        .search-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 20px rgba(56,189,248,0.1); }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Color themes per section */
+        .theme-swift .qa-num { background: rgba(251,146,60,0.15); color: var(--accent-orange); }
+        .theme-swift .section-tag { background: rgba(251,146,60,0.15); color: var(--accent-orange); }
+        .theme-flutter .qa-num { background: rgba(56,189,248,0.15); color: var(--accent-blue); }
+        .theme-flutter .section-tag { background: rgba(56,189,248,0.15); color: var(--accent-blue); }
+        .theme-security .qa-num { background: rgba(248,113,113,0.15); color: var(--accent-red); }
+        .theme-security .section-tag { background: rgba(248,113,113,0.15); color: var(--accent-red); }
+        .theme-coding .qa-num { background: rgba(74,222,128,0.15); color: var(--accent-green); }
+        .theme-coding .section-tag { background: rgba(74,222,128,0.15); color: var(--accent-green); }
+        .theme-arch .qa-num { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+        .theme-arch .section-tag { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+
+        .inline-code {
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.08);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85em;
+            color: var(--accent-pink);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<header class="hero">
+    <div class="hero-content">
+        <div class="hero-badge">🚀 Interview Preparation Guide 2026</div>
+        <h1>Mobile Developer Interview Mastery</h1>
+        <p>Comprehensive Q&A covering Flutter, Dart, Swift, iOS, Security, Architecture & Coding — with real code snippets and interview tips.</p>
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-number">50+</span>
+                <span class="stat-label">Questions</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">6</span>
+                <span class="stat-label">Categories</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">Code Snippets</span>
+            </div>
+        </div>
+        <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search questions..." oninput="filterQuestions(this.value)">
+        </div>
+    </div>
+</header>
+
+<!-- ═══════════════════ NAV ═══════════════════ -->
+<nav class="sticky-nav">
+    <div class="nav-inner">
+        <button class="nav-btn active" onclick="switchSection('swift')">🍎 Swift & iOS</button>
+        <button class="nav-btn" onclick="switchSection('flutter')">💙 Flutter & Dart</button>
+        <button class="nav-btn" onclick="switchSection('state')">🔄 State Management</button>
+        <button class="nav-btn" onclick="switchSection('security')">🔒 Security</button>
+        <button class="nav-btn" onclick="switchSection('arch')">🏗️ Architecture</button>
+        <button class="nav-btn" onclick="switchSection('coding')">💻 Coding Challenges</button>
+    </div>
+</nav>
+
+<main class="container">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--                 SWIFT & iOS                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-swift" class="section active theme-swift">
+    <div class="section-header">
+        <span class="section-tag">Apple Ecosystem</span>
+        <h2>Swift & iOS Fundamentals</h2>
+        <p>Core concepts every iOS developer must know — from value types to concurrency.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-swift')">⊞ Expand All</button>
+    </div>
+
+    <!-- Q1: Struct vs Class -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>What is the difference between Struct and Class in Swift? <span class="difficulty diff-easy">Fundamental</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This is one of the most frequently asked Swift questions. The core distinction is <strong>value type vs reference type</strong>.</p>
+
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>Struct (Value Type)</th><th>Class (Reference Type)</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Memory</strong></td><td>Stack (usually)</td><td>Heap</td></tr>
+                    <tr><td><strong>Copy behavior</strong></td><td>Deep copy on assignment</td><td>Shared reference</td></tr>
+                    <tr><td><strong>Inheritance</strong></td><td>❌ Not supported</td><td>✅ Supported</td></tr>
+                    <tr><td><strong>Deinitializer</strong></td><td>❌ No <code>deinit</code></td><td>✅ Has <code>deinit</code></td></tr>
+                    <tr><td><strong>Mutability</strong></td><td>Requires <code>mutating</code> keyword</td><td>Mutable by default</td></tr>
+                    <tr><td><strong>Identity check</strong></td><td>❌ No <code>===</code></td><td>✅ <code>===</code> operator</td></tr>
+                    <tr><td><strong>Thread safety</strong></td><td>✅ Inherently thread-safe</td><td>⚠️ Requires synchronization</td></tr>
+                    <tr><td><strong>ARC</strong></td><td>❌ Not reference counted</td><td>✅ Reference counted</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// VALUE TYPE — each variable holds its own copy
+struct Point {
+    var x: Double
+    var y: Double
+}
+
+var a = Point(x: 1, y: 2)
+var b = a        // b is a COPY of a
+b.x = 10
+print(a.x)       // 1 — 'a' is unchanged ✅
+
+// REFERENCE TYPE — variables share the same instance
+class Circle {
+    var radius: Double
+    init(radius: Double) { self.radius = radius }
+    deinit { print("Circle deallocated") }
+}
+
+let c1 = Circle(radius: 5)
+let c2 = c1      // c2 points to the SAME object
+c2.radius = 99
+print(c1.radius)  // 99 — c1 is also changed ⚠️
+print(c1 === c2)  // true — same identity</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Apple recommends using <strong>structs by default</strong>. Use classes only when you need inheritance, reference semantics, or Objective-C interoperability. Mention <strong>Copy-on-Write (COW)</strong> optimization for Swift collections (Array, Dictionary, Set) — they're structs but copy only when mutated.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q2: SwiftUI vs UIKit -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>SwiftUI vs UIKit — In-depth comparison <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Aspect</th><th>SwiftUI</th><th>UIKit</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Paradigm</strong></td><td>Declarative</td><td>Imperative</td></tr>
+                    <tr><td><strong>Introduced</strong></td><td>iOS 13 (2019)</td><td>iOS 2 (2008)</td></tr>
+                    <tr><td><strong>UI Definition</strong></td><td>Describe <em>what</em> you want</td><td>Describe <em>how</em> to build it</td></tr>
+                    <tr><td><strong>State Management</strong></td><td>Built-in property wrappers</td><td>Manual (delegates, KVO, closures)</td></tr>
+                    <tr><td><strong>Live Preview</strong></td><td>✅ Xcode Previews</td><td>❌ Storyboard only</td></tr>
+                    <tr><td><strong>Cross-platform</strong></td><td>iOS, macOS, watchOS, tvOS, visionOS</td><td>iOS/tvOS only</td></tr>
+                    <tr><td><strong>Maturity</strong></td><td>Rapidly evolving</td><td>Mature and stable</td></tr>
+                    <tr><td><strong>Interop</strong></td><td>UIViewRepresentable</td><td>UIHostingController</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>SwiftUI</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// SwiftUI — Declarative approach
+struct ProfileView: View {
+    @State private var name = "John"
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "person.circle.fill")
+                .font(.system(size: 80))
+                .foregroundStyle(.blue)
+            
+            TextField("Name", text: $name)
+                .textFieldStyle(.roundedBorder)
+            
+            Text("Hello, \(name)!")
+                .font(.title2)
+        }
+        .padding()
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>UIKit</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// UIKit — Imperative approach
+class ProfileViewController: UIViewController {
+    let nameLabel = UILabel()
+    let textField = UITextField()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        textField.addTarget(self, action: #selector(textChanged), for: .editingChanged)
+        // Manually add subviews, set constraints, configure styling...
+        view.addSubview(nameLabel)
+        view.addSubview(textField)
+        // ... NSLayoutConstraint setup code ...
+    }
+
+    @objc func textChanged() {
+        nameLabel.text = "Hello, \(textField.text ?? "")!"
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Mention that many production apps use a <strong>hybrid approach</strong> — SwiftUI for new screens and UIKit for complex, battle-tested components. Mention <code>UIViewRepresentable</code> and <code>UIHostingController</code> as bridging APIs.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q3: Swift Concurrency -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>Explain Swift Concurrency in depth (async/await, actors, structured concurrency) <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Swift Concurrency (introduced in Swift 5.5) provides a <strong>modern, safe, and structured</strong> way to write concurrent code, replacing completion handler patterns.</p>
+
+            <h4>Core Components</h4>
+            <ul>
+                <li><strong>async/await</strong> — Write asynchronous code that reads like synchronous code</li>
+                <li><strong>Structured Concurrency</strong> — Tasks are organized in a parent-child hierarchy via <code>async let</code> and <code>TaskGroup</code></li>
+                <li><strong>Actors</strong> — Reference types that protect mutable state from data races</li>
+                <li><strong>@Sendable</strong> — Marks closures and types safe to pass across concurrency boundaries</li>
+                <li><strong>@MainActor</strong> — Ensures code runs on the main thread (UI updates)</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// 1️⃣ async/await — Clean asynchronous code
+func fetchUser(id: Int) async throws -> User {
+    let url = URL(string: "https://api.example.com/users/\(id)")!
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return try JSONDecoder().decode(User.self, from: data)
+}
+
+// 2️⃣ Structured concurrency with async let
+func loadDashboard() async throws -> Dashboard {
+    async let profile = fetchUser(id: 1)          // Runs concurrently
+    async let posts = fetchPosts(userId: 1)       // Runs concurrently
+    async let notifications = fetchNotifications() // Runs concurrently
+    
+    return try await Dashboard(
+        profile: profile,
+        posts: posts,
+        notifications: notifications
+    )
+}
+
+// 3️⃣ TaskGroup for dynamic concurrency
+func fetchAllUsers(ids: [Int]) async throws -> [User] {
+    try await withThrowingTaskGroup(of: User.self) { group in
+        for id in ids {
+            group.addTask { try await fetchUser(id: id) }
+        }
+        var users: [User] = []
+        for try await user in group {
+            users.append(user)
+        }
+        return users
+    }
+}
+
+// 4️⃣ Actor — Thread-safe state management
+actor BankAccount {
+    private var balance: Double = 0
+    
+    func deposit(_ amount: Double) {
+        balance += amount  // No race condition — actor-isolated
+    }
+    
+    func getBalance() -> Double { balance }
+}
+
+// 5️⃣ @MainActor — UI updates
+@MainActor
+class ViewModel: ObservableObject {
+    @Published var users: [User] = []
+    
+    func refresh() async {
+        let fetched = try? await fetchAllUsers(ids: [1, 2, 3])
+        users = fetched ?? []  // Safe — guaranteed on main thread
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Emphasize that Swift concurrency provides <strong>compile-time safety</strong> against data races (unlike GCD). Mention <strong>Task cancellation</strong> propagation and how <code>Task.checkCancellation()</code> enables cooperative cancellation.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q4: Large Image Handling -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>How do you handle large images efficiently in iOS? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Loading large images directly into memory can cause <strong>memory spikes and OOM crashes</strong>. Here's the professional approach:</p>
+
+            <h4>Key Strategies</h4>
+            <ul>
+                <li><strong>Downsampling</strong> — Resize at decode time using <code>ImageIO</code> framework, never decode the full-resolution image</li>
+                <li><strong>Lazy Loading</strong> — Load images on-demand as cells appear (UICollectionView prefetching)</li>
+                <li><strong>Caching</strong> — Multi-layer cache: <code>NSCache</code> (memory) + disk cache (e.g., Kingfisher, SDWebImage)</li>
+                <li><strong>Thumbnail API</strong> — Use <code>prepareThumbnail(of:)</code> (iOS 15+) or <code>UIImage.preparingThumbnail</code></li>
+                <li><strong>Progressive Loading</strong> — Show low-res placeholder → load full image asynchronously</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — Downsampling with ImageIO</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">import ImageIO
+
+func downsample(imageAt url: URL, to pointSize: CGSize, scale: CGFloat) -> UIImage? {
+    let maxDimensionInPixels = max(pointSize.width, pointSize.height) * scale
+    
+    let options: [CFString: Any] = [
+        kCGImageSourceCreateThumbnailFromImageAlways: true,
+        kCGImageSourceShouldCacheImmediately: true,        // Decode immediately
+        kCGImageSourceCreateThumbnailWithTransform: true,
+        kCGImageSourceThumbnailMaxPixelSize: maxDimensionInPixels
+    ]
+    
+    guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil),
+          let downsampledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary)
+    else { return nil }
+    
+    return UIImage(cgImage: downsampledImage)
+}
+
+// Usage: A 12MP photo (4032×3024) loads only the pixels needed
+let thumbnail = downsample(imageAt: photoURL, to: CGSize(width: 200, height: 200), scale: UIScreen.main.scale)</code></pre>
+            </div>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>Common Mistake</strong>
+                    <p>Never use <code>UIImage(named:)</code> for user-generated content — it caches images in memory permanently. Use <code>UIImage(contentsOfFile:)</code> instead, which doesn't auto-cache.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q5: Delegate, NSNotificationCenter, UserDefaults -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>Compare Delegate, NotificationCenter, and UserDefaults — when to use each? <span class="difficulty diff-easy">Fundamental</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>Delegate</th><th>NotificationCenter</th><th>UserDefaults</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Purpose</strong></td><td>1-to-1 communication</td><td>1-to-many broadcasting</td><td>Persistent key-value storage</td></tr>
+                    <tr><td><strong>Coupling</strong></td><td>Loose (protocol-based)</td><td>Very loose (no direct reference)</td><td>N/A — storage mechanism</td></tr>
+                    <tr><td><strong>Direction</strong></td><td>Bi-directional (return values)</td><td>Uni-directional (fire & forget)</td><td>Read/Write</td></tr>
+                    <tr><td><strong>Retain risk</strong></td><td>⚠️ Use <code>weak</code></td><td>✅ Auto-removed (iOS 9+)</td><td>✅ None</td></tr>
+                    <tr><td><strong>Use case</strong></td><td>UITableViewDelegate, custom protocols</td><td>Keyboard events, app lifecycle</td><td>User preferences, settings</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — All Three Patterns</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// 1️⃣ DELEGATE PATTERN
+protocol PaymentDelegate: AnyObject {
+    func paymentDidComplete(amount: Double)
+    func paymentDidFail(error: Error)
+}
+
+class PaymentProcessor {
+    weak var delegate: PaymentDelegate?  // Always weak!
+    
+    func processPayment() {
+        // ... process ...
+        delegate?.paymentDidComplete(amount: 99.99)
+    }
+}
+
+// 2️⃣ NOTIFICATION CENTER
+// Post
+NotificationCenter.default.post(
+    name: .userDidLogin,
+    object: nil,
+    userInfo: ["userId": "123"]
+)
+
+// Observe
+NotificationCenter.default.addObserver(
+    forName: .userDidLogin,
+    object: nil,
+    queue: .main
+) { notification in
+    let userId = notification.userInfo?["userId"] as? String
+    print("User logged in: \(userId ?? "")")
+}
+
+// 3️⃣ USER DEFAULTS
+UserDefaults.standard.set(true, forKey: "isDarkMode")
+UserDefaults.standard.set("en", forKey: "preferredLanguage")
+
+let isDark = UserDefaults.standard.bool(forKey: "isDarkMode")
+// ⚠️ Never store sensitive data (passwords, tokens) in UserDefaults!</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Mention that for <strong>sensitive data</strong>, use <strong>Keychain</strong> instead of UserDefaults. Also mention modern alternatives: <strong>Combine publishers</strong> and <strong>@Observable</strong> macro (iOS 17+) are replacing many delegate and notification patterns.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q6: SwiftUI Property Wrappers -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">06</span>
+            <h3>Explain SwiftUI State Property Wrappers (@State, @Binding, @ObservedObject, etc.) <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Wrapper</th><th>Ownership</th><th>Type</th><th>Use Case</th></tr></thead>
+                <tbody>
+                    <tr><td><code>@State</code></td><td>Owned by view</td><td>Value types</td><td>Simple local state (toggle, text field)</td></tr>
+                    <tr><td><code>@Binding</code></td><td>Borrowed (child → parent)</td><td>Value types</td><td>Two-way data flow to child views</td></tr>
+                    <tr><td><code>@StateObject</code></td><td>Owned by view</td><td>ObservableObject</td><td>Create & own a view model</td></tr>
+                    <tr><td><code>@ObservedObject</code></td><td>Borrowed</td><td>ObservableObject</td><td>Receive a view model from parent</td></tr>
+                    <tr><td><code>@EnvironmentObject</code></td><td>Injected via environment</td><td>ObservableObject</td><td>Shared app-wide state</td></tr>
+                    <tr><td><code>@Environment</code></td><td>System-provided</td><td>EnvironmentValues</td><td>System settings (colorScheme, locale)</td></tr>
+                    <tr><td><code>@AppStorage</code></td><td>UserDefaults-backed</td><td>Value types</td><td>Persistent user preferences</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// PARENT VIEW — owns the state
+struct ParentView: View {
+    @StateObject private var vm = UserViewModel()   // ✅ Create & own
+    @State private var showSheet = false             // ✅ Simple local state
+    @AppStorage("isDarkMode") var isDark = false     // ✅ Persisted
+    
+    var body: some View {
+        ChildView(showSheet: $showSheet, viewModel: vm) // Pass down
+            .environmentObject(vm)                       // Inject globally
+    }
+}
+
+// CHILD VIEW — borrows state
+struct ChildView: View {
+    @Binding var showSheet: Bool                    // ✅ Two-way binding
+    @ObservedObject var viewModel: UserViewModel    // ✅ Borrowed, don't create
+    @EnvironmentObject var globalVM: UserViewModel  // ✅ From environment
+    @Environment(\.colorScheme) var colorScheme     // ✅ System value
+    
+    var body: some View {
+        Button("Toggle") { showSheet.toggle() }
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>Common Pitfall</strong>
+                    <p><code>@ObservedObject</code> in place of <code>@StateObject</code> can cause your view model to be recreated on every view redraw — leading to lost state. Use <code>@StateObject</code> for creation, <code>@ObservedObject</code> for injection.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q7: Singleton Pattern -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">07</span>
+            <h3>What is the Singleton pattern? How do you implement it in Swift? <span class="difficulty diff-easy">Fundamental</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>A Singleton ensures <strong>only one instance</strong> of a class exists throughout the app's lifecycle. Swift makes this trivially safe with <code>static let</code>.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">final class NetworkManager {
+    static let shared = NetworkManager()   // Thread-safe, lazy init
+    
+    private init() { }  // Prevent external instantiation
+    
+    private let session = URLSession(configuration: .default)
+    
+    func fetch(from url: URL) async throws -> Data {
+        let (data, _) = try await session.data(from: url)
+        return data
+    }
+}
+
+// Usage
+let data = try await NetworkManager.shared.fetch(from: someURL)</code></pre>
+            </div>
+
+            <h4>When to Use (and Avoid)</h4>
+            <ul>
+                <li>✅ <strong>Good:</strong> Logging, Analytics, Network layer, Database manager</li>
+                <li>❌ <strong>Bad:</strong> When you need testability (hard to mock) — prefer <strong>Dependency Injection</strong> with a protocol</li>
+            </ul>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Mention that <code>static let</code> in Swift is <strong>thread-safe by default</strong> (dispatch_once under the hood). Discuss the tradeoff: Singletons make unit testing harder — suggest the <strong>"Singleton + Protocol" pattern</strong> where you inject the singleton via a protocol for testability.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q8: Multiple API Config -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">08</span>
+            <h3>How do you configure multiple API environments (Dev/Staging/Prod)? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>A clean multi-environment setup uses <strong>build configurations + enum-based config</strong>:</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">enum Environment {
+    case development, staging, production
+    
+    var baseURL: String {
+        switch self {
+        case .development: return "https://dev-api.example.com"
+        case .staging:     return "https://staging-api.example.com"
+        case .production:  return "https://api.example.com"
+        }
+    }
+    
+    var apiKey: String {
+        switch self {
+        case .development: return "dev_key_xxx"
+        case .staging:     return "staging_key_xxx"
+        case .production:  return "prod_key_xxx"
+        }
+    }
+    
+    var logLevel: LogLevel {
+        switch self {
+        case .development: return .verbose
+        case .staging:     return .warning
+        case .production:  return .error
+        }
+    }
+}
+
+struct AppConfig {
+    #if DEBUG
+    static let current: Environment = .development
+    #elseif STAGING
+    static let current: Environment = .staging
+    #else
+    static let current: Environment = .production
+    #endif
+}
+
+// Usage
+let url = "\(AppConfig.current.baseURL)/users"</code></pre>
+            </div>
+
+            <div class="tip-box success">
+                <span class="tip-icon">✅</span>
+                <div class="tip-content">
+                    <strong>Best Practice</strong>
+                    <p>Use <strong>Xcode Build Configurations</strong> + <strong>.xcconfig files</strong> for environment-specific values. Store API keys in the <strong>Info.plist</strong> or <strong>Keychain</strong> — never hardcode secrets in source code.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--             FLUTTER & DART                     -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-flutter" class="section theme-flutter">
+    <div class="section-header">
+        <span class="section-tag">Cross-Platform</span>
+        <h2>Flutter & Dart Core Concepts</h2>
+        <p>Essential Flutter and Dart knowledge for mobile developer interviews.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-flutter')">⊞ Expand All</button>
+    </div>
+
+    <!-- Q1: Flutter Lifecycle -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>Explain the Flutter Widget Lifecycle and App Lifecycle <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>StatefulWidget Lifecycle</h4>
+            <ol>
+                <li><strong><code>createState()</code></strong> — Framework calls this to create the State object</li>
+                <li><strong><code>initState()</code></strong> — Called once when State is inserted into the tree (initialize controllers, subscriptions)</li>
+                <li><strong><code>didChangeDependencies()</code></strong> — Called when inherited widgets change (e.g., Theme, MediaQuery)</li>
+                <li><strong><code>build()</code></strong> — Called every time the widget needs to render (must be pure, no side effects)</li>
+                <li><strong><code>didUpdateWidget()</code></strong> — Parent rebuilds with new widget config (compare old vs new)</li>
+                <li><strong><code>setState()</code></strong> — Triggers a rebuild by marking the state as dirty</li>
+                <li><strong><code>deactivate()</code></strong> — State is removed from the tree (may be reinserted)</li>
+                <li><strong><code>dispose()</code></strong> — Called once; permanent removal. Clean up controllers, streams, subscriptions</li>
+            </ol>
+
+            <h4>App Lifecycle (AppLifecycleState)</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class MyApp extends StatefulWidget {
+  @override
+  State&lt;MyApp&gt; createState() => _MyAppState();
+}
+
+class _MyAppState extends State&lt;MyApp&gt; with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);  // Register observer
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:   // App is visible and responding
+        print('App resumed — refresh data');
+        break;
+      case AppLifecycleState.inactive:  // App is inactive (phone call overlay)
+        print('App inactive — pause animations');
+        break;
+      case AppLifecycleState.paused:    // App is in background
+        print('App paused — save state');
+        break;
+      case AppLifecycleState.detached:  // App is about to be terminated
+        print('App detached — final cleanup');
+        break;
+      case AppLifecycleState.hidden:    // App hidden (iOS multitasking)
+        print('App hidden');
+        break;
+    }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // Always remove!
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => MaterialApp(home: HomeScreen());
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Always mention that <code>dispose()</code> is critical for preventing <strong>memory leaks</strong>. Dispose all <code>TextEditingController</code>, <code>AnimationController</code>, <code>StreamSubscription</code>, and <code>ScrollController</code> instances.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q2: Dart Single-Threaded -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>Dart is single-threaded. How can Flutter make API calls and show animations simultaneously? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This is a <strong>top interview question</strong>. The answer lies in Dart's <strong>Event Loop</strong> and <strong>non-blocking I/O</strong>.</p>
+
+            <h4>How It Works</h4>
+            <ul>
+                <li>Dart runs on a <strong>single thread</strong> with an <strong>Event Loop</strong> that processes events from two queues:
+                    <ul>
+                        <li><strong>Microtask Queue</strong> — High priority (Future.microtask, scheduleMicrotask)</li>
+                        <li><strong>Event Queue</strong> — Regular events (I/O, timers, UI gestures, Future callbacks)</li>
+                    </ul>
+                </li>
+                <li><code>async/await</code> does <strong>NOT block</strong> the thread — it registers a callback and yields control back to the Event Loop</li>
+                <li>The network I/O happens at the <strong>OS level</strong> (outside Dart) — Dart's event loop is free to render frames at 60fps</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Event Loop in Action</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// This does NOT block the UI thread!
+Future&lt;void&gt; fetchData() async {
+  // 1. HTTP request is delegated to the OS
+  // 2. Dart's event loop is FREE to process UI events
+  // 3. When response arrives, callback is added to event queue
+  final response = await http.get(Uri.parse('https://api.example.com/data'));
+  
+  // This runs only AFTER the response arrives
+  setState(() {
+    data = jsonDecode(response.body);
+    isLoading = false;
+  });
+}
+
+// For CPU-INTENSIVE work, use Isolates (true parallelism)
+Future&lt;List&lt;int&gt;&gt; heavyComputation(List&lt;int&gt; data) async {
+  // Runs on a SEPARATE thread — won't block UI
+  return await Isolate.run(() {
+    // Complex sorting, parsing, image processing...
+    return data.where((n) => isPrime(n)).toList();
+  });
+}
+
+// Or use compute() for simpler cases
+final result = await compute(parseJson, jsonString);</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Key distinction: <code>async/await</code> handles <strong>I/O-bound</strong> work (network, file system) — no extra thread needed. <strong>Isolates</strong> handle <strong>CPU-bound</strong> work (JSON parsing of large payloads, image processing) — these are true OS threads with their own memory. Mention that <code>Isolate.run()</code> (Dart 2.19+) is the modern API replacing <code>compute()</code>.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q3: Networking Library -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>Which networking libraries have you used in Flutter? Compare them. <span class="difficulty diff-easy">Fundamental</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Library</th><th>Type</th><th>Best For</th><th>Features</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>http</strong></td><td>Official</td><td>Simple REST calls</td><td>Lightweight, composable client</td></tr>
+                    <tr><td><strong>dio</strong></td><td>Community</td><td>Complex API layers</td><td>Interceptors, FormData, cancel tokens, retry</td></tr>
+                    <tr><td><strong>retrofit</strong></td><td>Community</td><td>Type-safe APIs</td><td>Code generation, annotation-based</td></tr>
+                    <tr><td><strong>graphql_flutter</strong></td><td>Community</td><td>GraphQL</td><td>Query, mutations, subscriptions, cache</td></tr>
+                    <tr><td><strong>chopper</strong></td><td>Community</td><td>REST with codegen</td><td>Similar to Retrofit (Android)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Dio with Interceptors</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class ApiClient {
+  late final Dio _dio;
+
+  ApiClient() {
+    _dio = Dio(BaseOptions(
+      baseUrl: 'https://api.example.com',
+      connectTimeout: const Duration(seconds: 10),
+      receiveTimeout: const Duration(seconds: 15),
+    ));
+
+    // Add interceptors
+    _dio.interceptors.addAll([
+      LogInterceptor(requestBody: true, responseBody: true),
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          options.headers['Authorization'] = 'Bearer $token';
+          handler.next(options);
+        },
+        onError: (error, handler) async {
+          if (error.response?.statusCode == 401) {
+            await _refreshToken();
+            handler.resolve(await _retry(error.requestOptions));
+          } else {
+            handler.next(error);
+          }
+        },
+      ),
+    ]);
+  }
+
+  Future&lt;User&gt; getUser(int id) async {
+    final response = await _dio.get('/users/$id');
+    return User.fromJson(response.data);
+  }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q4: Pagination with State Preservation -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>With 90,000 items, if I scroll to index 89,910 then navigate away and back — does it show the same position or reset? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This depends on your <strong>implementation strategy</strong>:</p>
+
+            <h4>Default Behavior (No Preservation)</h4>
+            <p>If you use a basic <code>ListView.builder</code> without state preservation, navigating away and back will <strong>reset to the first page</strong> because the widget is destroyed and recreated.</p>
+
+            <h4>How to Preserve Scroll Position</h4>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Scroll Position Preservation</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// APPROACH 1: PageStorageKey (simplest)
+ListView.builder(
+  key: const PageStorageKey('my_list'),  // Preserves scroll offset
+  itemCount: items.length,
+  itemBuilder: (context, index) => ItemTile(items[index]),
+)
+
+// APPROACH 2: AutomaticKeepAliveClientMixin
+class _ListPageState extends State&lt;ListPage&gt;
+    with AutomaticKeepAliveClientMixin {
+  
+  @override
+  bool get wantKeepAlive => true; // Keep state alive in TabBarView/PageView
+  
+  @override
+  Widget build(BuildContext context) {
+    super.build(context); // Required!
+    return ListView.builder(/* ... */);
+  }
+}
+
+// APPROACH 3: State Management (BLoC/Provider) for full control
+class PaginationCubit extends Cubit&lt;PaginationState&gt; {
+  final List&lt;Item&gt; _allItems = [];
+  double _savedScrollOffset = 0;
+  
+  void saveScrollPosition(double offset) {
+    _savedScrollOffset = offset;
+  }
+  
+  double get savedScrollOffset => _savedScrollOffset;
+  
+  // Restore position after navigation
+  void restorePosition(ScrollController controller) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (controller.hasClients) {
+        controller.jumpTo(_savedScrollOffset);
+      }
+    });
+  }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>For 90,000 items, also discuss <strong>performance</strong>: use <code>ListView.builder</code> (lazy construction), <strong>cursor-based pagination</strong> over offset-based, and mention <code>itemExtent</code> for fixed-height items which dramatically improves scrolling performance.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q5: Crashlytics -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>How do you integrate Firebase Crashlytics in Flutter? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Crashlytics Setup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// main.dart — Complete Crashlytics integration
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+void main() async {
+  // 1. Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // 2. Catch Flutter framework errors
+  FlutterError.onError = (details) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+  };
+
+  // 3. Catch async errors not caught by Flutter
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
+  // 4. Catch errors in the Zone (optional extra safety net)
+  runZonedGuarded(() {
+    runApp(const MyApp());
+  }, (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack);
+  });
+}
+
+// Custom error logging with context
+void logApiError(String endpoint, dynamic error) {
+  FirebaseCrashlytics.instance
+    ..setCustomKey('endpoint', endpoint)
+    ..setCustomKey('userId', currentUser.id)
+    ..log('API call failed: $endpoint')
+    ..recordError(error, StackTrace.current);
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q6: Flutter vs Jetpack Compose -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">06</span>
+            <h3>What is the difference between Flutter and Jetpack Compose? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Aspect</th><th>Flutter</th><th>Jetpack Compose</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Language</strong></td><td>Dart</td><td>Kotlin</td></tr>
+                    <tr><td><strong>Platform</strong></td><td>Cross-platform (iOS, Android, Web, Desktop)</td><td>Android-only (+ Compose Multiplatform)</td></tr>
+                    <tr><td><strong>Rendering</strong></td><td>Own engine (Skia/Impeller)</td><td>Uses Android's native Canvas</td></tr>
+                    <tr><td><strong>UI Paradigm</strong></td><td>Declarative (Widget tree)</td><td>Declarative (Composable functions)</td></tr>
+                    <tr><td><strong>State</strong></td><td>setState, BLoC, Provider, Riverpod</td><td>remember, mutableStateOf, ViewModel</td></tr>
+                    <tr><td><strong>Native Access</strong></td><td>Platform Channels</td><td>Direct Kotlin/Java access</td></tr>
+                    <tr><td><strong>Hot Reload</strong></td><td>✅ Sub-second</td><td>✅ Live Edit (AS Hedgehog+)</td></tr>
+                    <tr><td><strong>Maturity</strong></td><td>Stable since 2018</td><td>Stable since 2021</td></tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Key differentiator: Flutter renders <strong>every pixel itself</strong> (consistency across platforms), while Compose uses <strong>native Android rendering</strong> (better native feel but Android-only). Mention <strong>Compose Multiplatform</strong> by JetBrains as a competitor to Flutter for cross-platform.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q7: APK Size -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">07</span>
+            <h3>How do you reduce APK size in Flutter? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Strategies to Reduce APK Size</h4>
+            <ol>
+                <li><strong>Use <code>--split-per-abi</code></strong> — Generates separate APKs for arm64-v8a, armeabi-v7a, x86_64 (saves ~40%)</li>
+                <li><strong>Enable R8/ProGuard</strong> — Code shrinking and obfuscation</li>
+                <li><strong>Use <code>--obfuscate --split-debug-info</code></strong> — Removes debug symbols</li>
+                <li><strong>Compress assets</strong> — Use WebP instead of PNG, compress with TinyPNG</li>
+                <li><strong>Remove unused packages</strong> — Audit <code>pubspec.yaml</code> regularly</li>
+                <li><strong>Use deferred components</strong> — Load features on demand</li>
+                <li><strong>Tree shaking icons</strong> — <code>flutter build apk --tree-shake-icons</code></li>
+                <li><strong>Use App Bundle</strong> — <code>flutter build appbundle</code> (Google Play optimizes delivery)</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Terminal Commands</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart"># Build with all optimizations
+flutter build apk \
+  --release \
+  --split-per-abi \
+  --obfuscate \
+  --split-debug-info=build/debug-info \
+  --tree-shake-icons
+
+# Analyze what's taking space
+flutter build apk --analyze-size
+
+# Build App Bundle (preferred for Play Store)
+flutter build appbundle --release</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q8: Build Flavors -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">08</span>
+            <h3>What are build flavors and why do we need them? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Build flavors allow you to create <strong>multiple variants</strong> of your app from a <strong>single codebase</strong> — each with different configurations, branding, or API endpoints.</p>
+
+            <h4>Common Use Cases</h4>
+            <ul>
+                <li><strong>Dev / Staging / Production</strong> — Different API endpoints, logging levels</li>
+                <li><strong>Free / Premium</strong> — Different features enabled</li>
+                <li><strong>White-label</strong> — Same app with different branding for different clients</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-yaml"></span>Android — build.gradle</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-kotlin">// android/app/build.gradle
+android {
+    flavorDimensions "environment"
+    productFlavors {
+        dev {
+            dimension "environment"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+            resValue "string", "app_name", "MyApp Dev"
+        }
+        staging {
+            dimension "environment"
+            applicationIdSuffix ".staging"
+            versionNameSuffix "-staging"
+            resValue "string", "app_name", "MyApp Staging"
+        }
+        prod {
+            dimension "environment"
+            resValue "string", "app_name", "MyApp"
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Flavor-based Configuration</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// Run with flavor
+// flutter run --flavor dev -t lib/main_dev.dart
+// flutter run --flavor prod -t lib/main_prod.dart
+
+// main_dev.dart
+void main() {
+  AppConfig.init(environment: Environment.dev);
+  runApp(const MyApp());
+}
+
+// main_prod.dart
+void main() {
+  AppConfig.init(environment: Environment.prod);
+  runApp(const MyApp());
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q9: MethodChannel -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">09</span>
+            <h3>How do you implement Flutter-to-Native communication using MethodChannel? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Flutter provides <strong>Platform Channels</strong> for communicating between Dart and native code (Kotlin/Swift). There are three types:</p>
+            <ul>
+                <li><strong>MethodChannel</strong> — Invoke methods (most common)</li>
+                <li><strong>EventChannel</strong> — Continuous streams from native to Dart</li>
+                <li><strong>BasicMessageChannel</strong> — Simple message passing</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Flutter Side</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class BatteryService {
+  static const _channel = MethodChannel('com.example.app/battery');
+
+  static Future&lt;int&gt; getBatteryLevel() async {
+    try {
+      final int level = await _channel.invokeMethod('getBatteryLevel');
+      return level;
+    } on PlatformException catch (e) {
+      throw Exception('Failed to get battery level: ${e.message}');
+    }
+  }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-kotlin"></span>Kotlin — Android Side</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-kotlin">class MainActivity : FlutterActivity() {
+    private val CHANNEL = "com.example.app/battery"
+
+    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
+        
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+                    "getBatteryLevel" -> {
+                        val level = getBatteryLevel()
+                        if (level != -1) result.success(level)
+                        else result.error("UNAVAILABLE", "Battery level not available", null)
+                    }
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    private fun getBatteryLevel(): Int {
+        val batteryManager = getSystemService(BATTERY_SERVICE) as BatteryManager
+        return batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+    }
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — iOS Side</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">@UIApplicationMain
+class AppDelegate: FlutterAppDelegate {
+    override func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
+        let controller = window?.rootViewController as! FlutterViewController
+        let channel = FlutterMethodChannel(
+            name: "com.example.app/battery",
+            binaryMessenger: controller.binaryMessenger
+        )
+        
+        channel.setMethodCallHandler { (call, result) in
+            switch call.method {
+            case "getBatteryLevel":
+                UIDevice.current.isBatteryMonitoringEnabled = true
+                let level = Int(UIDevice.current.batteryLevel * 100)
+                result(level)
+            default:
+                result(FlutterMethodNotImplemented)
+            }
+        }
+        
+        return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--             STATE MANAGEMENT                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-state" class="section theme-flutter">
+    <div class="section-header">
+        <span class="section-tag">State Management</span>
+        <h2>State Management & Dependency Injection</h2>
+        <p>Master BLoC, Cubit, Provider, Riverpod, and DI patterns in Flutter.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-state')">⊞ Expand All</button>
+    </div>
+
+    <!-- Q1: State Management Solutions -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>Which state management solutions have you used? Compare them. <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Solution</th><th>Complexity</th><th>Best For</th><th>Key Concept</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>setState</strong></td><td>Simple</td><td>Local widget state</td><td>Direct state mutation</td></tr>
+                    <tr><td><strong>Provider</strong></td><td>Low</td><td>Small-medium apps</td><td>InheritedWidget wrapper</td></tr>
+                    <tr><td><strong>Riverpod</strong></td><td>Medium</td><td>Medium-large apps</td><td>Compile-safe, no BuildContext</td></tr>
+                    <tr><td><strong>BLoC</strong></td><td>High</td><td>Enterprise apps</td><td>Events → BLoC → States (streams)</td></tr>
+                    <tr><td><strong>Cubit</strong></td><td>Medium</td><td>When BLoC is overkill</td><td>Functions → States (no events)</td></tr>
+                    <tr><td><strong>GetX</strong></td><td>Low</td><td>Rapid prototyping</td><td>Reactive (.obs)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>For Deloitte/enterprise contexts, <strong>BLoC</strong> is the most common choice due to its testability, separation of concerns, and team scalability. Be prepared to explain the BLoC pattern in depth.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q2: BLoC vs Cubit -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>What is the difference between BLoC and Cubit? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Aspect</th><th>BLoC</th><th>Cubit</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Input</strong></td><td>Events (classes)</td><td>Direct method calls</td></tr>
+                    <tr><td><strong>Traceability</strong></td><td>✅ Full event log</td><td>⚠️ Less traceable</td></tr>
+                    <tr><td><strong>Boilerplate</strong></td><td>More (Event + State classes)</td><td>Less (just methods)</td></tr>
+                    <tr><td><strong>Advanced features</strong></td><td>transformEvents, debounce, throttle</td><td>Not available</td></tr>
+                    <tr><td><strong>Testability</strong></td><td>Event-driven testing</td><td>Method-based testing</td></tr>
+                    <tr><td><strong>Use when</strong></td><td>Complex logic, event transformations</td><td>Simple state changes</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Cubit (Simpler)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// CUBIT — Direct method calls
+class CounterCubit extends Cubit&lt;int&gt; {
+  CounterCubit() : super(0);
+
+  void increment() => emit(state + 1);  // Direct call
+  void decrement() => emit(state - 1);
+}
+
+// Usage
+context.read&lt;CounterCubit&gt;().increment();</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — BLoC (Event-driven)</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// EVENTS
+sealed class CounterEvent {}
+class IncrementPressed extends CounterEvent {}
+class DecrementPressed extends CounterEvent {}
+
+// STATES
+sealed class CounterState {
+  final int count;
+  const CounterState(this.count);
+}
+class CounterInitial extends CounterState {
+  const CounterInitial() : super(0);
+}
+class CounterUpdated extends CounterState {
+  const CounterUpdated(super.count);
+}
+
+// BLOC
+class CounterBloc extends Bloc&lt;CounterEvent, CounterState&gt; {
+  CounterBloc() : super(const CounterInitial()) {
+    on&lt;IncrementPressed&gt;((event, emit) {
+      emit(CounterUpdated(state.count + 1));
+    });
+    on&lt;DecrementPressed&gt;((event, emit) {
+      emit(CounterUpdated(state.count - 1));
+    });
+  }
+}
+
+// Usage — Events provide full traceability
+context.read&lt;CounterBloc&gt;().add(IncrementPressed());</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q3: DI in Flutter -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>How do you implement Dependency Injection in Flutter? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Flutter doesn't have a built-in DI framework, but several popular approaches exist:</p>
+
+            <h4>Popular DI Solutions</h4>
+            <ul>
+                <li><strong>get_it</strong> — Service locator pattern (most popular)</li>
+                <li><strong>injectable</strong> — Code generation on top of get_it</li>
+                <li><strong>Provider</strong> — Widget-tree-based DI</li>
+                <li><strong>Riverpod</strong> — Compile-safe DI without BuildContext</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — get_it Service Locator</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// injection.dart — Register dependencies
+final getIt = GetIt.instance;
+
+void setupDependencies() {
+  // Singleton — same instance always
+  getIt.registerLazySingleton&lt;ApiClient&gt;(() => ApiClient());
+  getIt.registerLazySingleton&lt;AuthRepository&gt;(
+    () => AuthRepositoryImpl(getIt&lt;ApiClient&gt;()),
+  );
+
+  // Factory — new instance each time
+  getIt.registerFactory&lt;LoginBloc&gt;(
+    () => LoginBloc(getIt&lt;AuthRepository&gt;()),
+  );
+}
+
+// main.dart
+void main() {
+  setupDependencies();
+  runApp(const MyApp());
+}
+
+// Usage — anywhere in the app
+final authRepo = getIt&lt;AuthRepository&gt;();
+
+// In widget tree with BlocProvider
+BlocProvider(
+  create: (_) => getIt&lt;LoginBloc&gt;(),
+  child: const LoginScreen(),
+)</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Explain the difference between <strong>Service Locator</strong> (get_it — pull dependencies) and <strong>Dependency Injection</strong> (constructor injection — push dependencies). Mention that <code>get_it</code> is technically a service locator, but combined with <code>injectable</code> it provides true DI via code generation.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--                 SECURITY                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-security" class="section theme-security">
+    <div class="section-header">
+        <span class="section-tag">Security & Fintech</span>
+        <h2>Security, Encryption & Device Integrity</h2>
+        <p>Critical for fintech and banking applications — SSL pinning, encryption, root detection.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-security')">⊞ Expand All</button>
+    </div>
+
+    <!-- Q1: SSL Pinning -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>What is SSL Pinning, and how does it work? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>SSL/Certificate Pinning</strong> ensures your app only communicates with servers using a <strong>pre-approved certificate</strong>, preventing Man-in-the-Middle (MITM) attacks even if a rogue CA is trusted by the device.</p>
+
+            <h4>Types of Pinning</h4>
+            <ul>
+                <li><strong>Certificate Pinning</strong> — Pin the entire certificate (must update app when cert rotates)</li>
+                <li><strong>Public Key Pinning</strong> — Pin only the public key (survives cert renewal if key stays same)</li>
+                <li><strong>Hash Pinning</strong> — Pin the SHA-256 hash of the certificate/public key</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — SSL Pinning with Dio</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
+
+Dio createPinnedDio() {
+  final dio = Dio();
+  
+  (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+    final client = HttpClient();
+    
+    // Load your certificate
+    final certBytes = File('assets/certs/api_cert.pem').readAsBytesSync();
+    
+    client.badCertificateCallback = (X509Certificate cert, String host, int port) {
+      // Compare certificate fingerprints
+      final serverCertHash = sha256.convert(cert.der).toString();
+      const pinnedHash = 'abc123...your_expected_hash...';
+      
+      return serverCertHash == pinnedHash;  // true = allow, false = reject
+    };
+    
+    return client;
+  };
+  
+  return dio;
+}
+
+// Alternative: Using http_certificate_pinning package
+final response = await HttpCertificatePinning.check(
+  serverURL: 'https://api.example.com',
+  headerHttp: {},
+  sha: SHA.SHA256,
+  allowedSHAFingerprints: ['expected_fingerprint_here'],
+  timeout: 50,
+);</code></pre>
+            </div>
+
+            <h4>Where to Get SSL Certificates</h4>
+            <ul>
+                <li><strong>Let's Encrypt</strong> — Free, automated, 90-day validity</li>
+                <li><strong>DigiCert / Comodo / GlobalSign</strong> — Commercial CAs for enterprise</li>
+                <li><strong>Extract from server:</strong> <code>openssl s_client -connect api.example.com:443 -showcerts</code></li>
+            </ul>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>Important Consideration</strong>
+                    <p>Certificate pinning requires a <strong>rotation strategy</strong> — pin the backup certificate too, or use public key pinning so cert renewals don't break your app. Always include a <strong>fallback mechanism</strong> with remote config to update pins without an app release.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q2: E2E Encryption -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>How do you implement end-to-end encryption for API payloads? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>E2E encryption ensures data is encrypted <strong>on the client</strong> and decrypted <strong>only on the intended server</strong> — even intermediary proxies can't read it.</p>
+
+            <h4>The Process</h4>
+            <ol>
+                <li><strong>Key Exchange</strong> — Client fetches server's public key (RSA/ECDH)</li>
+                <li><strong>Generate Session Key</strong> — Client generates a random AES-256 key</li>
+                <li><strong>Encrypt Payload</strong> — Encrypt data with AES-256-GCM (symmetric, fast)</li>
+                <li><strong>Encrypt Session Key</strong> — Encrypt the AES key with server's RSA public key</li>
+                <li><strong>Send Both</strong> — Send encrypted payload + encrypted session key</li>
+                <li><strong>Server Decrypts</strong> — Server uses RSA private key → gets AES key → decrypts payload</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — E2E Encryption Flow</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:pointycastle/export.dart';
+
+class E2EEncryption {
+  // Step 1: Generate random AES-256 key
+  static encrypt.Key generateSessionKey() {
+    return encrypt.Key.fromSecureRandom(32); // 256-bit
+  }
+
+  // Step 2: Encrypt payload with AES-256-GCM
+  static Map&lt;String, String&gt; encryptPayload(String plainText, encrypt.Key key) {
+    final iv = encrypt.IV.fromSecureRandom(12); // 96-bit IV for GCM
+    final encrypter = encrypt.Encrypter(encrypt.AES(key, mode: encrypt.AESMode.gcm));
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+    
+    return {
+      'data': encrypted.base64,
+      'iv': iv.base64,
+    };
+  }
+
+  // Step 3: Encrypt AES key with RSA public key
+  static String encryptSessionKey(encrypt.Key sessionKey, RSAPublicKey publicKey) {
+    final encrypter = encrypt.Encrypter(encrypt.RSA(publicKey: publicKey));
+    return encrypter.encrypt(sessionKey.base64).base64;
+  }
+
+  // Complete E2E encrypted API call
+  static Future&lt;void&gt; sendEncrypted(String payload) async {
+    final sessionKey = generateSessionKey();
+    final encrypted = encryptPayload(payload, sessionKey);
+    final encryptedKey = encryptSessionKey(sessionKey, serverPublicKey);
+    
+    await dio.post('/api/secure', data: {
+      'encrypted_data': encrypted['data'],
+      'iv': encrypted['iv'],
+      'encrypted_key': encryptedKey,
+    });
+  }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q3: Encrypt PAN/Card Data -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>How would you encrypt sensitive PAN or card data? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Handling payment card data requires <strong>PCI-DSS compliance</strong>. Key principles:</p>
+            <ul>
+                <li><strong>Never store</strong> full PAN on the device</li>
+                <li><strong>Tokenize</strong> — Replace card number with a non-reversible token</li>
+                <li><strong>Use platform keystores</strong> — Android Keystore / iOS Keychain for key storage</li>
+                <li><strong>Encrypt in transit</strong> — AES-256-GCM + TLS 1.3</li>
+                <li><strong>Mask display</strong> — Show only last 4 digits (**** **** **** 1234)</li>
+                <li><strong>Use established SDKs</strong> — Stripe, Razorpay, Braintree handle PCI compliance for you</li>
+            </ul>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>PCI-DSS Requirement</strong>
+                    <p>If you handle raw card data, your app must be <strong>PCI-DSS certified</strong>. The easier path: use a <strong>payment gateway SDK</strong> (Stripe Elements, Razorpay) that provides pre-built, certified card input fields — your app never touches the raw card number.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q4: Rooted Device Detection -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>How do you detect rooted/jailbroken devices? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Detection Techniques</h4>
+            <ul>
+                <li><strong>Android (Root):</strong>
+                    <ul>
+                        <li>Check for <code>su</code> binary in PATH</li>
+                        <li>Check for Magisk/SuperSU packages</li>
+                        <li>Check if <code>/system</code> is writable</li>
+                        <li>SafetyNet / Play Integrity API (Google's official)</li>
+                    </ul>
+                </li>
+                <li><strong>iOS (Jailbreak):</strong>
+                    <ul>
+                        <li>Check for Cydia/Sileo app (<code>/Applications/Cydia.app</code>)</li>
+                        <li>Check if <code>fork()</code> succeeds (shouldn't on non-jailbroken)</li>
+                        <li>Try writing outside sandbox</li>
+                        <li>Check for suspicious dylibs</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Flutter Root/Jailbreak Detection</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// Using flutter_jailbreak_detection or safe_device package
+import 'package:safe_device/safe_device.dart';
+
+class DeviceSecurityCheck {
+  static Future&lt;bool&gt; isDeviceSecure() async {
+    final isRooted = await SafeDevice.isJailBroken;      // Root/Jailbreak
+    final isRealDevice = await SafeDevice.isRealDevice;   // Not emulator
+    final canMockLocation = await SafeDevice.canMockLocation;
+    final isDevelopmentMode = await SafeDevice.isDevelopmentModeEnable;
+    
+    if (isRooted) {
+      // Block access or show warning
+      showSecurityAlert('Rooted/Jailbroken device detected');
+      return false;
+    }
+    
+    if (!isRealDevice) {
+      showSecurityAlert('Emulator detected');
+      return false;
+    }
+    
+    return true;
+  }
+}
+
+// Use at app startup
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  final isSecure = await DeviceSecurityCheck.isDeviceSecure();
+  if (!isSecure) {
+    runApp(const SecurityBlockedApp()); // Show restricted UI
+    return;
+  }
+  
+  runApp(const MyApp());
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Acknowledge that root detection is a <strong>cat-and-mouse game</strong> — advanced root-hiding tools (Magisk Hide) can bypass checks. For banking apps, use <strong>Google Play Integrity API</strong> (server-side verification) as the strongest defense, combined with client-side checks as an additional layer.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q5: Android Keystore -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>What is Android Keystore, and how do you use it? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>The <strong>Android Keystore System</strong> provides hardware-backed (TEE/StrongBox) storage for cryptographic keys. Keys stored here:</p>
+            <ul>
+                <li>Cannot be extracted from the device</li>
+                <li>Are protected by biometric authentication if configured</li>
+                <li>Survive app reinstallation if <code>setIsStrongBoxBacked(true)</code></li>
+                <li>Can require user authentication before each use</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-kotlin"></span>Kotlin — Android Keystore Usage</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-kotlin">import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
+import java.security.KeyStore
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+
+class SecureStorage {
+    private val keyAlias = "my_secure_key"
+    
+    // Generate or retrieve AES key from Keystore
+    fun getOrCreateKey(): javax.crypto.SecretKey {
+        val keyStore = KeyStore.getInstance("AndroidKeyStore").apply { load(null) }
+        
+        keyStore.getKey(keyAlias, null)?.let { return it as javax.crypto.SecretKey }
+        
+        // Generate new key in hardware-backed Keystore
+        val keyGenerator = KeyGenerator.getInstance(
+            KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore"
+        )
+        keyGenerator.init(
+            KeyGenParameterSpec.Builder(keyAlias,
+                KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256)
+                .setUserAuthenticationRequired(true)  // Require biometric
+                .setUserAuthenticationValidityDurationSeconds(300) // 5 min
+                .build()
+        )
+        return keyGenerator.generateKey()
+    }
+    
+    fun encrypt(data: ByteArray): Pair&lt;ByteArray, ByteArray&gt; {
+        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+        cipher.init(Cipher.ENCRYPT_MODE, getOrCreateKey())
+        return Pair(cipher.doFinal(data), cipher.iv)
+    }
+}</code></pre>
+            </div>
+
+            <p>In Flutter, access this via <strong>MethodChannel</strong> or use the <span class="inline-code">flutter_secure_storage</span> package which wraps Keystore (Android) and Keychain (iOS).</p>
+        </div></div>
+    </div>
+
+    <!-- Q6: BLE Integration -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">06</span>
+            <h3>Explain BLE integration architecture: scan, connect, discover, and read data <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>BLE Architecture Flow</h4>
+            <ol>
+                <li><strong>Request Permissions</strong> — Bluetooth, Location (Android), Bluetooth (iOS)</li>
+                <li><strong>Scan</strong> — Discover nearby BLE peripherals by advertising data or service UUIDs</li>
+                <li><strong>Connect</strong> — Establish GATT connection to the chosen device</li>
+                <li><strong>Discover Services</strong> — Query GATT services and characteristics</li>
+                <li><strong>Read/Write/Notify</strong> — Interact with characteristics (read sensor data, write commands)</li>
+                <li><strong>Disconnect</strong> — Clean up resources</li>
+            </ol>
+
+            <h4>GATT Lifecycle Callbacks</h4>
+            <ul>
+                <li><code>onConnectionStateChange</code> — Connected/Disconnected</li>
+                <li><code>onServicesDiscovered</code> — GATT services are available</li>
+                <li><code>onCharacteristicRead</code> — Data read from a characteristic</li>
+                <li><code>onCharacteristicChanged</code> — Notification/Indication received</li>
+                <li><code>onMtuChanged</code> — MTU size negotiated</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — BLE with flutter_blue_plus</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+
+class BleManager {
+  // 1. Scan for devices
+  void startScan() {
+    FlutterBluePlus.startScan(
+      withServices: [Guid('0000180d-0000-1000-8000-00805f9b34fb')], // Heart Rate
+      timeout: const Duration(seconds: 10),
+    );
+    
+    FlutterBluePlus.scanResults.listen((results) {
+      for (var r in results) {
+        print('Found: ${r.device.platformName} (${r.rssi} dBm)');
+      }
+    });
+  }
+  
+  // 2. Connect to device
+  Future&lt;void&gt; connect(BluetoothDevice device) async {
+    await device.connect(autoConnect: false, timeout: const Duration(seconds: 10));
+    
+    // 3. Discover services
+    List&lt;BluetoothService&gt; services = await device.discoverServices();
+    
+    for (var service in services) {
+      for (var char in service.characteristics) {
+        // 4. Read characteristic
+        if (char.properties.read) {
+          List&lt;int&gt; value = await char.read();
+          print('Read: $value');
+        }
+        
+        // 5. Subscribe to notifications
+        if (char.properties.notify) {
+          await char.setNotifyValue(true);
+          char.lastValueStream.listen((value) {
+            print('Notification: $value');
+          });
+        }
+      }
+    }
+  }
+  
+  // 6. Disconnect
+  Future&lt;void&gt; disconnect(BluetoothDevice device) async {
+    await device.disconnect();
+  }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Why Native APIs over Third-party SDKs?</strong>
+                    <p>Native Bluetooth APIs (CoreBluetooth on iOS, android.bluetooth on Android) provide <strong>full control</strong> over the BLE stack, better performance, fewer dependencies, and more reliable behavior. Third-party SDKs may add latency, have bugs, or not support all GATT features. For Flutter, <code>flutter_blue_plus</code> wraps native APIs effectively.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--                ARCHITECTURE                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-arch" class="section theme-arch">
+    <div class="section-header">
+        <span class="section-tag">Architecture</span>
+        <h2>Architecture & Design Patterns</h2>
+        <p>MVVM, Clean Architecture, and scalable app design for Flutter.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-arch')">⊞ Expand All</button>
+    </div>
+
+    <!-- Q1: MVVM in Flutter -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>Explain MVVM architecture in Flutter <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>MVVM (Model-View-ViewModel) separates your app into three layers:</p>
+            <ul>
+                <li><strong>Model</strong> — Data classes, repository, API services</li>
+                <li><strong>View</strong> — Widgets (UI) — observes ViewModel, sends user actions</li>
+                <li><strong>ViewModel</strong> — Business logic, state management — no UI knowledge</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — MVVM with Provider</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// ═══ MODEL ═══
+class User {
+  final String name;
+  final String email;
+  User({required this.name, required this.email});
+  
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) =>
+    User(name: json['name'], email: json['email']);
+}
+
+// ═══ REPOSITORY ═══
+class UserRepository {
+  final ApiClient _api;
+  UserRepository(this._api);
+  
+  Future&lt;List&lt;User&gt;&gt; getUsers() async {
+    final response = await _api.get('/users');
+    return (response.data as List).map((j) => User.fromJson(j)).toList();
+  }
+}
+
+// ═══ VIEWMODEL ═══
+class UserViewModel extends ChangeNotifier {
+  final UserRepository _repo;
+  
+  List&lt;User&gt; _users = [];
+  bool _isLoading = false;
+  String? _error;
+  
+  List&lt;User&gt; get users => _users;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  
+  UserViewModel(this._repo);
+  
+  Future&lt;void&gt; loadUsers() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    
+    try {
+      _users = await _repo.getUsers();
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+}
+
+// ═══ VIEW ═══
+class UserListScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer&lt;UserViewModel&gt;(
+      builder: (context, vm, _) {
+        if (vm.isLoading) return const CircularProgressIndicator();
+        if (vm.error != null) return Text('Error: ${vm.error}');
+        
+        return ListView.builder(
+          itemCount: vm.users.length,
+          itemBuilder: (context, i) => ListTile(
+            title: Text(vm.users[i].name),
+            subtitle: Text(vm.users[i].email),
+          ),
+        );
+      },
+    );
+  }
+}</code></pre>
+            </div>
+
+            <div class="tip-box success">
+                <span class="tip-icon">✅</span>
+                <div class="tip-content">
+                    <strong>Folder Structure</strong>
+                    <p><code>lib/features/user/</code> → <code>model/</code>, <code>repository/</code>, <code>viewmodel/</code>, <code>view/</code>. This feature-first structure scales better than layer-first (all models together, all views together).</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q2: Version Upgrade/Migration -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>How do you handle version upgrade/migration (e.g., Android 15 → 16)? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Migration Checklist</h4>
+            <ol>
+                <li><strong>Read release notes</strong> — Check breaking changes, new APIs, deprecated APIs</li>
+                <li><strong>Update <code>compileSdkVersion</code> and <code>targetSdkVersion</code></strong></li>
+                <li><strong>Update Gradle & plugins</strong> — AGP, Kotlin, Compose compiler</li>
+                <li><strong>Run <code>flutter upgrade</code></strong> — Update Flutter SDK</li>
+                <li><strong>Run <code>dart fix --apply</code></strong> — Auto-fix deprecations</li>
+                <li><strong>Test on new OS version</strong> — Emulator + real device</li>
+                <li><strong>Handle behavior changes</strong> — Permissions, background limits, storage access</li>
+                <li><strong>Update CI/CD pipeline</strong> — Build tools, signing configs</li>
+            </ol>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>Common Pitfalls</strong>
+                    <p>Always test <strong>backward compatibility</strong> — your app must still work on older OS versions (check <code>minSdkVersion</code>). Use conditional code for new APIs: <code>if (Build.VERSION.SDK_INT >= 33) { ... }</code></p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Q3: Java to Kotlin/Flutter Migration -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>How do you migrate an Android app from Java to Kotlin or Flutter? <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Java → Kotlin Migration</h4>
+            <ol>
+                <li><strong>Incremental approach</strong> — Kotlin and Java coexist in the same project</li>
+                <li>Start with <strong>utility classes and models</strong> (least risky)</li>
+                <li>Use Android Studio's <strong>"Convert Java File to Kotlin"</strong> (Ctrl+Alt+Shift+K)</li>
+                <li>Review converted code — auto-conversion may miss null safety nuances</li>
+                <li>Leverage Kotlin features: <code>data class</code>, <code>sealed class</code>, coroutines, extension functions</li>
+            </ol>
+
+            <h4>Java/Kotlin → Flutter Migration</h4>
+            <ol>
+                <li><strong>Create a Flutter module</strong> inside the existing Android project (Add-to-App)</li>
+                <li><strong>Migrate screen by screen</strong> — New screens in Flutter, existing in native</li>
+                <li>Use <strong>MethodChannel</strong> for Flutter ↔ native communication</li>
+                <li>Gradually <strong>replace native screens</strong> with Flutter equivalents</li>
+                <li>Eventually <strong>make Flutter the primary</strong> entry point</li>
+            </ol>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Never suggest a <strong>"big bang" rewrite</strong>. Always advocate for <strong>incremental migration</strong> — it reduces risk, allows parallel development, and keeps the app shippable at every stage.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--              CODING CHALLENGES                 -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-coding" class="section theme-coding">
+    <div class="section-header">
+        <span class="section-tag">Live Coding</span>
+        <h2>Coding Challenges</h2>
+        <p>Practice problems commonly asked in mobile developer interviews — with solutions in both Dart and Swift.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-coding')">⊞ Expand All</button>
+    </div>
+
+    <!-- Coding Q1: Armstrong Number -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>Find Armstrong numbers in a given range using async (with 2-second delay) <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>An <strong>Armstrong number</strong> (narcissistic number) is a number where the sum of its digits each raised to the power of the number of digits equals the number itself. Example: 153 = 1³ + 5³ + 3³ = 1 + 125 + 27 = 153</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Async Armstrong</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">import 'dart:math';
+
+Future&lt;bool&gt; isArmstrong(int number) async {
+  // 2-second delay as required
+  await Future.delayed(const Duration(seconds: 2));
+  
+  final digits = number.toString().split('');
+  final power = digits.length;
+  
+  final sum = digits.fold&lt;int&gt;(0, (acc, digit) {
+    return acc + pow(int.parse(digit), power).toInt();
+  });
+  
+  return sum == number;
+}
+
+Future&lt;List&lt;int&gt;&gt; getArmstrongs(int from, int to) async {
+  final List&lt;int&gt; armstrongs = [];
+  
+  for (int i = from; i &lt;= to; i++) {
+    if (await isArmstrong(i)) {
+      armstrongs.add(i);
+    }
+  }
+  
+  return armstrongs;
+}
+
+// Optimized version — check concurrently with Futures
+Future&lt;List&lt;int&gt;&gt; getArmstrongsFast(int from, int to) async {
+  final futures = &lt;Future&lt;MapEntry&lt;int, bool&gt;&gt;&gt;[];
+  
+  for (int i = from; i &lt;= to; i++) {
+    futures.add(
+      isArmstrong(i).then((result) => MapEntry(i, result)),
+    );
+  }
+  
+  final results = await Future.wait(futures);
+  return results
+      .where((entry) => entry.value)
+      .map((entry) => entry.key)
+      .toList()
+    ..sort();
+}
+
+void main() async {
+  final result = await getArmstrongs(100, 999);
+  print(result); // [153, 370, 371, 407]
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — Async Armstrong</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">import Foundation
+
+func isArmstrong(_ number: Int) async -> Bool {
+    // 2-second delay as required
+    try? await Task.sleep(nanoseconds: 2_000_000_000)
+    
+    let digits = String(number).compactMap { $0.wholeNumberValue }
+    let power = digits.count
+    
+    let sum = digits.reduce(0) { acc, digit in
+        acc + Int(pow(Double(digit), Double(power)))
+    }
+    
+    return sum == number
+}
+
+func getArmstrongs(from: Int, to: Int) async -> [Int] {
+    var results: [Int] = []
+    
+    for number in from...to {
+        if await isArmstrong(number) {
+            results.append(number)
+        }
+    }
+    
+    return results
+}
+
+// Concurrent version using TaskGroup
+func getArmstrongsConcurrent(from: Int, to: Int) async -> [Int] {
+    await withTaskGroup(of: (Int, Bool).self) { group in
+        for number in from...to {
+            group.addTask { (number, await isArmstrong(number)) }
+        }
+        
+        var results: [Int] = []
+        for await (number, isArm) in group {
+            if isArm { results.append(number) }
+        }
+        return results.sorted()
+    }
+}
+
+// Usage
+Task {
+    let armstrongs = await getArmstrongs(from: 100, to: 999)
+    print(armstrongs) // [153, 370, 371, 407]
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Coding Q2: Process Users (Group by City) -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>Parse JSON users, group by city, and calculate average age <span class="difficulty diff-medium">Important</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>Expected Output:</strong></p>
+            <pre style="background:var(--code-bg);padding:12px;border-radius:8px;color:var(--accent-green);font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin:1rem 0;">City: Chennai
+Average Age: 31
+Users: Arun, Deepa
+
+City: Bangalore
+Average Age: 37
+Users: Ravi, Mahesh
+
+City: Delhi
+Average Age: 31
+Users: Meera, John</pre>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart Solution</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">import 'dart:convert';
+
+void processUsers(String json) {
+  final List&lt;dynamic&gt; users = jsonDecode(json);
+  
+  // Group users by city using fold
+  final Map&lt;String, List&lt;Map&lt;String, dynamic&gt;&gt;&gt; grouped = {};
+  
+  for (final user in users) {
+    final city = user['city'] as String;
+    grouped.putIfAbsent(city, () => []).add(user);
+  }
+  
+  // Process each city group
+  grouped.forEach((city, cityUsers) {
+    final totalAge = cityUsers.fold&lt;int&gt;(
+      0, (sum, user) => sum + (user['age'] as int),
+    );
+    final avgAge = totalAge ~/ cityUsers.length;  // Integer division
+    final names = cityUsers.map((u) => u['name']).join(', ');
+    
+    print('City: $city');
+    print('Average Age: $avgAge');
+    print('Users: $names');
+    print('');
+  });
+}
+
+// Alternative: Elegant one-liner grouping
+void processUsersV2(String json) {
+  final users = (jsonDecode(json) as List).cast&lt;Map&lt;String, dynamic&gt;&gt;();
+  
+  // Dart doesn't have groupBy built-in, but collection package does
+  // Or use fold:
+  final grouped = users.fold&lt;Map&lt;String, List&lt;Map&lt;String, dynamic&gt;&gt;&gt;&gt;(
+    {},
+    (map, user) => map..putIfAbsent(user['city'], () => []).add(user),
+  );
+  
+  for (final entry in grouped.entries) {
+    final ages = entry.value.map((u) => u['age'] as int);
+    print('City: ${entry.key}');
+    print('Average Age: ${ages.reduce((a, b) => a + b) ~/ ages.length}');
+    print('Users: ${entry.value.map((u) => u['name']).join(', ')}\n');
+  }
+}
+
+void main() {
+  const jsonInput = '''
+  [
+    { "name": "Arun", "age": 34, "city": "Chennai" },
+    { "name": "Deepa", "age": 28, "city": "Chennai" },
+    { "name": "Ravi", "age": 41, "city": "Bangalore" },
+    { "name": "Mahesh", "age": 33, "city": "Bangalore" },
+    { "name": "John", "age": 25, "city": "Delhi" },
+    { "name": "Meera", "age": 38, "city": "Delhi" }
+  ]
+  ''';
+  
+  processUsers(jsonInput);
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift Solution</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">import Foundation
+
+func processUsers(_ json: String) {
+    guard let data = json.data(using: .utf8),
+          let users = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]]
+    else {
+        print("Invalid JSON")
+        return
+    }
+    
+    // Group by city using Dictionary(grouping:by:)
+    let grouped = Dictionary(grouping: users) { $0["city"] as! String }
+    
+    for (city, cityUsers) in grouped.sorted(by: { $0.key < $1.key }) {
+        let ages = cityUsers.compactMap { $0["age"] as? Int }
+        let avgAge = ages.reduce(0, +) / ages.count
+        let names = cityUsers.compactMap { $0["name"] as? String }.joined(separator: ", ")
+        
+        print("City: \(city)")
+        print("Average Age: \(avgAge)")
+        print("Users: \(names)")
+        print()
+    }
+}
+
+// Type-safe version with Codable
+struct User: Codable {
+    let name: String
+    let age: Int
+    let city: String
+}
+
+func processUsersTypeSafe(_ json: String) {
+    guard let data = json.data(using: .utf8),
+          let users = try? JSONDecoder().decode([User].self, from: data)
+    else { return }
+    
+    let grouped = Dictionary(grouping: users, by: \.city)
+    
+    for (city, group) in grouped {
+        let avgAge = group.map(\.age).reduce(0, +) / group.count
+        let names = group.map(\.name).joined(separator: ", ")
+        print("City: \(city)\nAverage Age: \(avgAge)\nUsers: \(names)\n")
+    }
+}
+
+processUsers(jsonInput)</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Show both approaches — raw JSON parsing and <strong>type-safe Codable/model-based parsing</strong>. Mention error handling, and discuss the <strong>time complexity</strong>: O(n) for a single pass grouping. In Swift, highlight <code>Dictionary(grouping:by:)</code> as a powerful stdlib feature.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- Coding Q3: Additional - Reverse String -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>Bonus: Common coding patterns for interviews <span class="difficulty diff-easy">Quick Reference</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart — Essential Patterns</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// 1️⃣ Palindrome Check
+bool isPalindrome(String s) {
+  final cleaned = s.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '');
+  return cleaned == cleaned.split('').reversed.join('');
+}
+
+// 2️⃣ Fibonacci with Memoization
+Map&lt;int, int&gt; _memo = {};
+int fib(int n) {
+  if (n &lt;= 1) return n;
+  return _memo.putIfAbsent(n, () => fib(n - 1) + fib(n - 2));
+}
+
+// 3️⃣ Find Duplicates in a List
+List&lt;int&gt; findDuplicates(List&lt;int&gt; nums) {
+  final seen = &lt;int&gt;{};
+  return nums.where((n) => !seen.add(n)).toList();
+}
+
+// 4️⃣ Flatten Nested List
+List&lt;dynamic&gt; flatten(List&lt;dynamic&gt; nested) {
+  return nested.expand((e) => e is List ? flatten(e) : [e]).toList();
+}
+
+// 5️⃣ Debounce (common in search)
+Timer? _debounce;
+void onSearchChanged(String query) {
+  _debounce?.cancel();
+  _debounce = Timer(const Duration(milliseconds: 500), () {
+    performSearch(query);
+  });
+}
+
+// 6️⃣ Two Sum (HashMap approach — O(n))
+List&lt;int&gt; twoSum(List&lt;int&gt; nums, int target) {
+  final map = &lt;int, int&gt;{};
+  for (int i = 0; i &lt; nums.length; i++) {
+    final complement = target - nums[i];
+    if (map.containsKey(complement)) {
+      return [map[complement]!, i];
+    }
+    map[nums[i]] = i;
+  }
+  return [];
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer>
+    <p>📱 Mobile Developer Interview Prep Guide — Built with ❤️ for 2026 interviews</p>
+    <p style="margin-top:8px">Covers Flutter • Dart • Swift • iOS • Security • Architecture</p>
+</footer>
+
+<script>
+// Navigation
+function switchSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: document.querySelector('.sticky-nav').offsetTop, behavior: 'smooth' });
+}
+
+// Toggle Q&A card
+function toggleCard(el) {
+    el.closest('.qa-card').classList.toggle('open');
+}
+
+// Expand/Collapse all in section
+function toggleAll(sectionId) {
+    const section = document.getElementById(sectionId);
+    const cards = section.querySelectorAll('.qa-card');
+    const allOpen = [...cards].every(c => c.classList.contains('open'));
+    cards.forEach(c => allOpen ? c.classList.remove('open') : c.classList.add('open'));
+    const btn = section.querySelector('.tool-btn');
+    btn.textContent = allOpen ? '⊞ Expand All' : '⊟ Collapse All';
+}
+
+// Copy code
+function copyCode(btn) {
+    const code = btn.closest('.code-block').querySelector('code').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = 'Copy', 2000);
+    });
+}
+
+// Search
+function filterQuestions(query) {
+    const q = query.toLowerCase();
+    if (!q) {
+        document.querySelectorAll('.qa-card').forEach(c => c.style.display = '');
+        document.querySelectorAll('.section').forEach(s => {
+            if (!s.classList.contains('active')) return;
+            s.querySelectorAll('.qa-card').forEach(c => c.style.display = '');
+        });
+        return;
+    }
+    
+    // Show all sections when searching
+    document.querySelectorAll('.section').forEach(s => s.classList.add('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    
+    document.querySelectorAll('.qa-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(q) ? '' : 'none';
+    });
+}
+
+// Highlight code on load
+document.addEventListener('DOMContentLoaded', () => {
+    hljs.highlightAll();
+});
+</script>
+</body>
+</html>

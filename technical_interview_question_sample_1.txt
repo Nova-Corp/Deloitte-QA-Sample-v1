@@ -1,0 +1,159 @@
+struct and Value - difference - explain in depth
+
+SwiftUI- UIKit - difference -  explain in depth
+
+Swift concurrency - explain in depth
+
+Image - large type - how to handle it
+
+Multiple Api - config 
+
+Delegate, NSNotificationCenter, NSUserDefaults
+
+State wrappers - SwiftUI
+
+singleton pattern
+
+Flutter -  Full basics
+
+Coding program
+
+Armstrong Number, using async 
+
+ 
+
+ 
+
+Find Armstrong numbers from given range
+
+aysnchronous Array(Int) getArmstrongs(from, to)  {
+
+return List
+}
+x =100
+y = 999
+
+2 seconds delay is required in the Armstrong function
+
+1³ + 5³ + 3³ = 1 + 125 + 27 = 153
+
+ 
+
+Below are the Flutter+Android, please utilise flutter questions from below list, android questions you can ignore.
+
+#1
+
+ project explain
+
+ coroutine
+
+dagger/hilt
+
+pagination
+
+flutter life cycle
+
+mvvm with flutter architecture
+
+version upgrade imgration from like 15 to 16 for mobile app
+
+crashlytics
+
+thread /background thread
+
+DI in flutter
+
+when 90000 item list and i am on the last index like 89910-90000 then come back 2 time then again go its visible same item or refresh with first page 1-10 index,what will be affect on same .
+
+#2
+
+detailed Android and Flutter topics, especially around security, encryption, and Kotlin. Communication
+
+1.Which state-management solution have you used in your current project?
+
+2.What is the difference between Bloc and Cubit?
+
+3.Can you handle the iOS side independently, or does another developer handle it?
+
+4.Which networking library have you used in Android or Flutter?
+
+5.How would you implement SSL/TLS securely in your application?
+
+6.Where would you get the SSL certificate from?
+
+7.Have you worked with threads in your project?
+
+8.Dart is single-threaded. How can Flutter make an API call and show a loading animation simultaneously?
+
+9.If an API takes 30 seconds to respond, how does the progress indicator continue running without freezing the UI
+
+#3
+
+Security, Rooted device detection, SSL Pinning,Encryption/Decryption, E2E process, Kotlin concepts, Flutter concepts (like Flutter lifecycle, Flutter framwork) Fintech exp, Dart language exp, Flutter knowledge manadatory
+
+1)Explain the complete BLE integration architecture.
+
+2)How do you scan, connect, discover services, and read data from a BLE device?
+
+3)What are the GATT lifecycle callbacks?
+
+4)Why use native Bluetooth APIs instead of a third-party SDK?
+
+5)How do you implement Flutter-to-Kotlin communication using MethodChannel?
+
+6)How do you implement end-to-end encryption for API payloads?
+
+7)How would you encrypt sensitive PAN or card data?
+
+8)What is SSL pinning, and how does it work?
+
+9)What is Android Keystore, and how do you use it?
+
+10)How do you detect rooted devices?
+
+11)Explain Coroutines and the difference between StateFlow, SharedFlow, and LiveData.
+
+12)What is the difference between Flutter and Jetpack Compose?
+
+13)How do you migrate an Android application from Java to Kotlin or Flutter?
+
+14)How do you reduce APK size?
+
+15)What are build flavors, and why do we need them?
+
+Flutter -  Full basics
+
+Coding program(both Swift and Dart)
+
+Armstrong Number, using async
+
+let jsonInput = """
+[
+{ "name": "Arun", "age": 34, "city": "Chennai" },
+{ "name": "Deepa", "age": 28, "city": "Chennai" },
+{ "name": "Ravi", "age": 41, "city": "Bangalore" },
+{ "name": "Mahesh", "age": 33, "city": "Bangalore" },
+{ "name": "John", "age": 25, "city": "Delhi" },
+{ "name": "Meera", "age": 38, "city": "Delhi" }
+]
+"""
+
+func processUsers(_ json: String) {
+
+}
+
+//processUsers(jsonInput) both dart and swift
+
+expected output is
+
+//City: Chennai
+//Average Age: 31  
+//Users: Arun, Deepa
+
+//City: Bangalore  
+//Average Age: 37  
+//Users: Ravi, Mahesh
+
+//City: Delhi  
+//Average Age: 31  
+//Users: Meera, John
