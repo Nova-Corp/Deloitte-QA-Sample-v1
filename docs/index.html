@@ -609,6 +609,9 @@
         .theme-coding .section-tag { background: rgba(74,222,128,0.15); color: var(--accent-green); }
         .theme-arch .qa-num { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
         .theme-arch .section-tag { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+        .theme-advanced .qa-num { background: rgba(244,114,182,0.15); color: var(--accent-pink); }
+        .theme-advanced .section-tag { background: rgba(244,114,182,0.15); color: var(--accent-pink); }
+
 
         .inline-code {
             padding: 2px 8px;
@@ -630,11 +633,11 @@
         <p>Comprehensive Q&A covering Flutter, Dart, Swift, iOS, Security, Architecture & Coding — with real code snippets and interview tips.</p>
         <div class="hero-stats">
             <div class="stat">
-                <span class="stat-number">39+</span>
+                <span class="stat-number">49+</span>
                 <span class="stat-label">Questions</span>
             </div>
             <div class="stat">
-                <span class="stat-number">6</span>
+                <span class="stat-number">7</span>
                 <span class="stat-label">Categories</span>
             </div>
             <div class="stat">
@@ -658,6 +661,7 @@
         <button class="nav-btn" onclick="switchSection('security')">🔒 Security</button>
         <button class="nav-btn" onclick="switchSection('arch')">🏗️ Architecture</button>
         <button class="nav-btn" onclick="switchSection('coding')">💻 Coding Challenges</button>
+        <button class="nav-btn" onclick="switchSection('advanced')">🌟 High-Yield Interview Q&A</button>
     </div>
 </nav>
 
@@ -3463,6 +3467,708 @@ List&lt;int&gt; twoSum(List&lt;int&gt; nums, int target) {
     map[nums[i]] = i;
   }
   return [];
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--         HIGH-YIELD INTERVIEW QUESTIONS         -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-advanced" class="section theme-advanced">
+    <div class="section-header">
+        <span class="section-tag">Senior &amp; Lead Expectations</span>
+        <h2>High-Yield Interview Questions (Flutter &amp; iOS)</h2>
+        <p>Curated advanced questions frequently asked by top consulting firms and tech enterprises (Deloitte, Big Tech, Fintech).</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-advanced')">⊞ Expand All</button>
+    </div>
+
+    <!-- ─── SUB-HEADER: FLUTTER ─── -->
+    <div style="margin: 2rem 0 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border);">
+        <h3 style="color: var(--accent-blue); font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+            <span>💙</span> Part A: Advanced Flutter &amp; Dart Questions
+        </h3>
+    </div>
+
+    <!-- FLUTTER Q1: Memory Leaks -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">01</span>
+            <h3>How do you detect, profile, and fix Memory Leaks in Flutter? <span class="difficulty diff-hard">Lead Level</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Memory leaks in Flutter are typically caused by objects being held in memory because of active references long after their corresponding widget has been disposed.</p>
+
+            <h4>Top 5 Root Causes of Leaks in Flutter</h4>
+            <ol>
+                <li><strong>Undisposed Controllers:</strong> Failing to call <code>dispose()</code> on <code>AnimationController</code>, <code>TextEditingController</code>, or <code>ScrollController</code>.</li>
+                <li><strong>Uncancelled Stream Subscriptions:</strong> Listening to a continuous <code>Stream</code> or Firebase snapshot without calling <code>subscription.cancel()</code> in <code>dispose()</code>.</li>
+                <li><strong>Retaining BuildContext Across Async Gaps:</strong> Closures capturing <code>context</code> that outlive the widget, keeping the entire element subtree retained in memory.</li>
+                <li><strong>Global Event Listeners:</strong> Registering observers with <code>WidgetsBinding.instance.addObserver(this)</code> or event buses without removing them.</li>
+                <li><strong>Unbounded Image Caching:</strong> Loading hundreds of high-res network images without capping <code>PaintingBinding.instance.imageCache.maximumSizeBytes</code>.</li>
+            </ol>
+
+            <h4>How to Profile Using Flutter DevTools</h4>
+            <ul>
+                <li><strong>Memory Tab &amp; Heap Snapshot:</strong> Take Snapshot 1 &rarr; navigate into the suspect feature &rarr; navigate back &rarr; take Snapshot 2 &rarr; <strong>Diff Snapshots</strong>. If state classes or render objects persist after pop, a leak exists.</li>
+                <li><strong>Allocation Tracing:</strong> Tracks stack traces of where surviving instances were allocated.</li>
+                <li><strong>Leak Tracking Package:</strong> Integrate the official <code>leak_tracker</code> package into widget tests to automatically flag leaks during CI/CD.</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Leak Prevention Pattern</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class LeakingWidgetState extends State&lt;LeakingWidget&gt; {
+  late final TextEditingController _controller;
+  late final AnimationController _animController;
+  StreamSubscription? _dataSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+    _animController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    
+    // Subscribe to external stream
+    _dataSubscription = eventBus.on&lt;OrderUpdate&gt;().listen((event) {
+      // ✅ Always verify widget is still in tree before updating state
+      if (!mounted) return;
+      setState(() => _latestOrder = event);
+    });
+  }
+
+  // ✅ CRITICAL: Clean up all resources in dispose
+  @override
+  void dispose() {
+    _dataSubscription?.cancel();
+    _controller.dispose();
+    _animController.dispose();
+    super.dispose();
+  }
+
+  // Safe async navigation pattern (Dart 3 context.mounted check)
+  Future&lt;void&gt; submitForm() async {
+    await apiService.save();
+    if (!context.mounted) return; // ✅ Prevents using stale context
+    Navigator.of(context).pop();
+  }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Mention <strong>Dart 3's <code>context.mounted</code> check</strong>! Prior to Dart 3, lint warned against <code>use_build_context_synchronously</code>. Now, checking <code>if (!context.mounted) return;</code> immediately following an <code>await</code> is the industry standard for preventing unmounted context crashes and memory leaks.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- FLUTTER Q2: Offline-First Architecture -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">02</span>
+            <h3>How do you design a scalable Offline-First architecture in Flutter? <span class="difficulty diff-hard">Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>In enterprise applications, an offline-first architecture treats the <strong>local database as the Single Source of Truth (SSOT)</strong>. The UI never waits for the network to render.</p>
+
+            <h4>Core Architecture Pillars</h4>
+            <ol>
+                <li><strong>Local-First Storage (SSOT):</strong> UI observes a reactive local database (Drift/SQLite, Isar, or Hive). Network responses update the local database; the local database emits new states to the UI.</li>
+                <li><strong>Optimistic UI Updates:</strong> User actions (e.g. creating an order) write to the local database immediately with a <code>SyncStatus.pending</code> flag. The UI reflects the change instantly (0ms latency).</li>
+                <li><strong>Background Sync Queue:</strong> A persistent queue stores pending operations. When network connectivity is restored (monitored via <code>connectivity_plus</code>), the queue replays operations in chronological order.</li>
+                <li><strong>Conflict Resolution Strategies:</strong>
+                    <ul>
+                        <li><strong>Last-Write-Wins (LWW):</strong> Uses server-assigned timestamps. Simplest, but risk of overwriting concurrent edits.</li>
+                        <li><strong>Server-Wins / Client-Wins:</strong> Strict deterministic precedence based on business rules.</li>
+                        <li><strong>Version Vectors / CRDTs:</strong> Conflict-free replicated data types for collaborative documents or notes.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Offline-First Repository Pattern</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class OrderRepository {
+  final LocalDatabase _localDb;
+  final ApiClient _apiClient;
+  final SyncQueue _syncQueue;
+
+  // 1️⃣ UI reads exclusively from local DB stream (instant 0ms render)
+  Stream&lt;List&lt;Order&gt;&gt; watchOrders() => _localDb.watchAllOrders();
+
+  // 2️⃣ Optimistic write
+  Future&lt;void&gt; createOrder(Order order) async {
+    final pendingOrder = order.copyWith(syncStatus: SyncStatus.pending);
+    await _localDb.insertOrder(pendingOrder); // Instant local display
+    
+    // Add to persistent queue
+    await _syncQueue.enqueue(SyncAction(
+      endpoint: '/orders',
+      method: 'POST',
+      payload: order.toJson(),
+    ));
+
+    // Trigger sync in background if connected
+    _triggerSync();
+  }
+
+  // 3️⃣ Background Sync Engine
+  Future&lt;void&gt; _triggerSync() async {
+    final pendingActions = await _syncQueue.getPending();
+    for (final action in pendingActions) {
+      try {
+        final result = await _apiClient.post(action.endpoint, data: action.payload);
+        await _localDb.updateOrder(Order.fromJson(result.data)..syncStatus = SyncStatus.synced);
+        await _syncQueue.markCompleted(action.id);
+      } catch (e) {
+        if (e is SocketException) break; // Still offline, stop draining
+        // Handle 409 Conflict using business resolution logic
+      }
+    }
+  }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- FLUTTER Q3: App Startup Optimization & Impeller -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">03</span>
+            <h3>How do you optimize App Startup Time (TTFF) and eliminate Shader Compilation Jank? <span class="difficulty diff-hard">Advanced</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>1. Minimizing Time To First Frame (TTFF)</h4>
+            <p>Every millisecond before <code>runApp()</code> renders delays the user experience. Follow these production rules:</p>
+            <ul>
+                <li><strong>Never await non-critical services before <code>runApp()</code>:</strong> Only await the bare essentials (e.g. <code>WidgetsFlutterBinding.ensureInitialized()</code> and critical auth tokens). Move Analytics, Crashlytics, AdMob, and push notification setup to run <em>after</em> the first frame.</li>
+                <li><strong>Use <code>addPostFrameCallback</code>:</strong> Schedule background SDK initializations immediately after the initial splash screen renders.</li>
+                <li><strong>Deferred Components (Android):</strong> Download dynamic feature modules on-demand, significantly reducing base APK download and initial load times.</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; High-Speed Startup Pipeline</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">void main() async {
+  // 1. Minimum sync startup
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // 2. Load ONLY critical session token for routing decision (~10ms)
+  final initialRoute = await SecurityService.determineInitialRoute();
+
+  // 3. Render first UI frame immediately!
+  runApp(MyApp(initialRoute: initialRoute));
+
+  // 4. Deferred initialization of heavy non-critical SDKs
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await Firebase.initializeApp();
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    await AnalyticsService.init();
+    await PushNotificationService.init();
+  });
+}</code></pre>
+            </div>
+
+            <h4>2. Eliminating Shader Compilation Jank (Impeller vs Skia)</h4>
+            <ul>
+                <li><strong>The Problem with Skia:</strong> On older Flutter versions, Skia compiled shaders at runtime on the first frame a visual effect (gradient, shadow, blur) was encountered, causing noticeable frame drops (jank) during animations.</li>
+                <li><strong>Impeller Engine Solution:</strong> Impeller pre-compiles a fixed set of shaders at app build time (using Vulkan on Android and Metal on iOS). It completely eliminates shader compilation jank, delivering predictable 60/120fps animations.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- FLUTTER Q4: Custom RenderObjects -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">04</span>
+            <h3>When is CustomPainter not enough, and how do you build a Custom RenderObject? <span class="difficulty diff-hard">Internal Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><code>CustomPainter</code> is great for drawing 2D shapes, but it has limitations:</p>
+            <ul>
+                <li>It cannot participate in layout sizing of child widgets.</li>
+                <li>It cannot manage custom multi-child hit testing or gesture routing.</li>
+                <li>It re-executes paint without deep layout cache awareness.</li>
+            </ul>
+
+            <h4>The Flutter Box Constraints Protocol</h4>
+            <blockquote><strong>"Constraints go down. Sizes go up. Parents set positions."</strong></blockquote>
+            <ol>
+                <li>Parent passes <code>BoxConstraints</code> down to child.</li>
+                <li>Child decides its own <code>Size</code> within those constraints and returns it up.</li>
+                <li>Parent sets the child's offset (position) in the <code>paint</code> phase.</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; Custom RenderBox Implementation</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">// 1. The Widget wrapper
+class SquareBadge extends LeafRenderObjectWidget {
+  final Color color;
+  final double size;
+  const SquareBadge({super.key, required this.color, required this.size});
+
+  @override
+  RenderObject createRenderObject(BuildContext context) =>
+      RenderSquareBadge(color: color, requestedSize: size);
+
+  @override
+  void updateRenderObject(BuildContext context, RenderSquareBadge renderObject) {
+    renderObject..color = color..requestedSize = size;
+  }
+}
+
+// 2. The RenderBox implementation
+class RenderSquareBadge extends RenderBox {
+  Color _color;
+  double _requestedSize;
+
+  RenderSquareBadge({required Color color, required double requestedSize})
+      : _color = color, _requestedSize = requestedSize;
+
+  set color(Color value) {
+    if (_color == value) return;
+    _color = value;
+    markNeedsPaint(); // Visual change only
+  }
+
+  set requestedSize(double value) {
+    if (_requestedSize == value) return;
+    _requestedSize = value;
+    markNeedsLayout(); // Geometry change requires layout pass
+  }
+
+  // 1️⃣ LAYOUT PASS: Compute size within constraints
+  @override
+  void performLayout() {
+    size = constraints.constrain(Size(_requestedSize, _requestedSize));
+  }
+
+  // 2️⃣ PAINT PASS: Draw directly on canvas
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    final paint = Paint()..color = _color;
+    context.canvas.drawRect(offset &amp; size, paint);
+  }
+
+  // 3️⃣ HIT-TEST PASS: Handle touch interactions
+  @override
+  bool hitTestSelf(Offset position) => true;
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- FLUTTER Q5: Enterprise Testing Strategy -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">05</span>
+            <h3>Explain your Enterprise Testing Strategy (Unit, Widget, Integration &amp; Golden Tests) <span class="difficulty diff-medium">Best Practices</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>The Mobile Testing Pyramid</h4>
+            <table class="compare-table">
+                <thead><tr><th>Tier</th><th>Share</th><th>Speed</th><th>Scope</th><th>Tools</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Unit Tests</strong></td><td>70%</td><td>Milliseconds</td><td>Pure business logic, repositories, BLoCs, models</td><td><code>test</code>, <code>bloc_test</code>, <code>mocktail</code></td></tr>
+                    <tr><td><strong>Widget Tests</strong></td><td>20%</td><td>100–500ms</td><td>UI rendering, user interaction, Golden comparisons</td><td><code>WidgetTester</code>, <code>golden_toolkit</code></td></tr>
+                    <tr><td><strong>Integration Tests</strong></td><td>10%</td><td>Minutes</td><td>End-to-End user journeys on real devices / emulators</td><td><code>integration_test</code>, Patrol</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-dart"></span>Dart &mdash; BLoC Test with Mocktail</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-dart">class MockAuthRepository extends Mock implements AuthRepository {}
+
+void main() {
+  late MockAuthRepository mockRepo;
+
+  setUp(() {
+    mockRepo = MockAuthRepository();
+  });
+
+  blocTest&lt;AuthBloc, AuthState&gt;(
+    'emits [AuthLoading, AuthSuccess] when LoginButtonPressed succeeds',
+    build: () {
+      when(() =&gt; mockRepo.login('admin@test.com', 'secret'))
+          .thenAnswer((_) async =&gt; User(id: '123', name: 'Admin'));
+      return AuthBloc(mockRepo);
+    },
+    act: (bloc) =&gt; bloc.add(const LoginButtonPressed('admin@test.com', 'secret')),
+    expect: () =&gt; [
+      AuthLoading(),
+      AuthSuccess(User(id: '123', name: 'Admin')),
+    ],
+    verify: (_) {
+      verify(() =&gt; mockRepo.login('admin@test.com', 'secret')).called(1);
+    },
+  );
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Golden UI Tests</strong>
+                    <p>Explain that <strong>Golden Tests</strong> render a widget into a bitmap image and compare it pixel-by-pixel against a committed reference "golden" file. This automatically catches unintended layout shifts, font overflow bugs, and CSS/styling regressions before merging to main.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- ─── SUB-HEADER: SWIFT & iOS ─── -->
+    <div style="margin: 3rem 0 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px dashed var(--border);">
+        <h3 style="color: var(--accent-orange); font-size: 1.3rem; display: flex; align-items: center; gap: 8px;">
+            <span>🍎</span> Part B: Advanced Swift &amp; iOS Questions
+        </h3>
+    </div>
+
+    <!-- SWIFT Q1: ARC, Memory Management -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">06</span>
+            <h3>Deep Dive: Automatic Reference Counting (ARC), Retain Cycles, Weak vs Unowned, and Autoreleasepool <span class="difficulty diff-hard">Core iOS</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Swift uses <strong>Automatic Reference Counting (ARC)</strong> to manage heap memory. Unlike garbage collection (which pauses execution to sweep memory), ARC inserts <code>retain</code> and <code>release</code> calls at <strong>compile-time</strong>.</p>
+
+            <h4>Weak vs Unowned References</h4>
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th><code>weak</code></th><th><code>unowned</code></th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Optionality</strong></td><td>Must be optional (<code>var delegate: Delegate?</code>)</td><td>Non-optional (assumes reference exists)</td></tr>
+                    <tr><td><strong>Deallocation behavior</strong></td><td>Automatically zeroed out to <code>nil</code></td><td>Does NOT zero out (becomes dangling pointer)</td></tr>
+                    <tr><td><strong>Accessing after dealloc</strong></td><td>Safe (returns <code>nil</code>)</td><td><strong>Fatal Crash</strong> (EXC_BAD_ACCESS)</td></tr>
+                    <tr><td><strong>Use Case</strong></td><td>Delegates, closures where lifetime can end early</td><td>Parent-child where child NEVER outlives parent</td></tr>
+                </tbody>
+            </table>
+
+            <h4>When and Why to Use <code>autoreleasepool</code></h4>
+            <p>When executing tight loops that allocate many temporary Objective-C / CoreGraphics objects (e.g. batch image processing), memory accumulates until the main runloop drains. Wrapping the loop body in <code>autoreleasepool</code> forces immediate deallocation after each iteration, preventing OOM crashes.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift &mdash; Autoreleasepool &amp; Capture Lists</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// 1️⃣ AUTORELEASEPOOL: Prevent memory spike during batch processing
+func processBatchImages(urls: [URL]) {
+    for url in urls {
+        autoreleasepool {
+            // Memory allocated here is reclaimed IMMEDIATELY at end of pool
+            guard let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data) else { return }
+            applyFilterAndSave(image)
+        }
+    }
+}
+
+// 2️⃣ CLOSURE CAPTURE LIST: Break retain cycle
+class OrderViewModel {
+    var onComplete: (() -> Void)?
+    var orderId: String = "101"
+
+    func setupOrder() {
+        // [weak self] prevents closure from holding strong reference to self
+        onComplete = { [weak self] in
+            guard let self = self else { return }
+            print("Order completed: \(self.orderId)")
+        }
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Interview Tip</strong>
+                    <p>Explain how to debug memory leaks in Xcode: use the <strong>Memory Graph Debugger</strong> (look for the purple exclamation mark icons indicating retain cycles) and run <strong>Xcode Instruments &rarr; Leaks &amp; Allocations</strong> to verify object allocations over time.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- SWIFT Q2: Swift 6 Data Race Safety -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">07</span>
+            <h3>What is Swift 6 Data Race Safety? Explain Sendable, Actor Isolation, and nonisolated <span class="difficulty diff-hard">Modern Swift</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Swift 6 turns on <strong>Complete Concurrency Checking</strong> by default, guaranteeing at compile time that concurrent threads cannot access mutable state simultaneously without synchronization.</p>
+
+            <h4>Key Concepts</h4>
+            <ul>
+                <li><strong><code>Sendable</code> Protocol:</strong> A marker protocol indicating a type can be safely passed across concurrency domains (threads/actors).
+                    <ul>
+                        <li>Value types (<code>struct</code>, <code>enum</code>) containing only Sendable properties are implicitly Sendable.</li>
+                        <li>Reference types (<code>class</code>) can only be Sendable if marked <code>final</code> with immutable <code>let</code> properties or protected by internal locks.</li>
+                    </ul>
+                </li>
+                <li><strong>Actor Isolation:</strong> State declared inside an <code>actor</code> is isolated. External callers must access it via <code>await</code>, serializing access to prevent race conditions.</li>
+                <li><strong><code>nonisolated</code> Keyword:</strong> Opts a method or computed property out of actor isolation when it only accesses immutable data or conforms to synchronous protocols (like <code>CustomStringConvertible</code>).</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift 6 &mdash; Safe Actor Architecture</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// Sendable struct &mdash; safe to pass across actors
+struct UserSession: Sendable {
+    let token: String
+    let userId: String
+}
+
+actor AuthStore {
+    private var currentSession: UserSession?
+
+    // Isolated mutable state
+    func updateSession(_ session: UserSession) {
+        self.currentSession = session
+    }
+
+    func getSession() -> UserSession? {
+        return currentSession
+    }
+
+    // nonisolated &mdash; does not touch mutable state, callable synchronously
+    nonisolated var supportedVersion: String {
+        return "v2.4.0"
+    }
+}
+
+// Global actor ensuring main-thread UI operations
+@MainActor
+class ProfileViewModel: ObservableObject {
+    @Published var userName: String = ""
+
+    func loadProfile(store: AuthStore) async {
+        // Crosses concurrency domain safely via await
+        if let session = await store.getSession() {
+            self.userName = session.userId // Guaranteed on Main thread
+        }
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- SWIFT Q3: Advanced iOS Architecture (Coordinators / VIPER) -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">08</span>
+            <h3>Beyond Basic MVVM: Explain the Coordinator Pattern and VIPER Architecture <span class="difficulty diff-hard">Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>As iOS apps grow, standard MVVM suffers from <strong>navigation coupling</strong> &mdash; ViewControllers become bloated by instantiating next screens and handling push/present transitions.</p>
+
+            <h4>The Coordinator Pattern (MVVM-C)</h4>
+            <p>The Coordinator takes 100% of navigation logic out of ViewControllers. ViewControllers only report user intent (e.g., <em>"User tapped login button"</em>) to the Coordinator, which handles routing, deep linking, and dependency injection.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift &mdash; Coordinator Pattern</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">protocol Coordinator: AnyObject {
+    var navigationController: UINavigationController { get set }
+    var childCoordinators: [Coordinator] { get set }
+    func start()
+}
+
+class AppCoordinator: Coordinator {
+    var navigationController: UINavigationController
+    var childCoordinators: [Coordinator] = []
+
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
+    }
+
+    func start() {
+        let authCoord = AuthCoordinator(navigationController: navigationController)
+        authCoord.delegate = self
+        childCoordinators.append(authCoord)
+        authCoord.start()
+    }
+}
+
+extension AppCoordinator: AuthCoordinatorDelegate {
+    func authDidSucceed() {
+        childCoordinators.removeAll()
+        let homeCoord = HomeCoordinator(navigationController: navigationController)
+        childCoordinators.append(homeCoord)
+        homeCoord.start()
+    }
+}</code></pre>
+            </div>
+
+            <h4>VIPER Architecture (Enterprise Scale)</h4>
+            <table class="compare-table">
+                <thead><tr><th>Component</th><th>Responsibility</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>View</strong></td><td>Renders UI, captures taps, passes user actions to Presenter</td></tr>
+                    <tr><td><strong>Interactor</strong></td><td>Contains all business logic, fetches from entities/repositories</td></tr>
+                    <tr><td><strong>Presenter</strong></td><td>Formats raw data from Interactor into display strings for View</td></tr>
+                    <tr><td><strong>Entity</strong></td><td>Pure data models (structs)</td></tr>
+                    <tr><td><strong>Router</strong></td><td>Handles navigation wireframing and transitions between modules</td></tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- SWIFT Q4: SwiftData vs CoreData vs Keychain -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">09</span>
+            <h3>iOS Data Persistence: Compare SwiftData, Core Data, Keychain, and UserDefaults <span class="difficulty diff-medium">Data Layer</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Technology</th><th>Best For</th><th>Security</th><th>Query Support</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>SwiftData (iOS 17+)</strong></td><td>Modern SwiftUI offline relational storage</td><td>Sandbox protected</td><td>Rich declarative queries (<code>#Predicate</code>)</td></tr>
+                    <tr><td><strong>Core Data</strong></td><td>Large-scale relational data, legacy apps</td><td>Sandbox protected</td><td><code>NSFetchRequest</code>, Faulting, Batch operations</td></tr>
+                    <tr><td><strong>Keychain</strong></td><td>Passwords, Auth Tokens, Encryption Keys</td><td><strong>Hardware-backed (Secure Enclave)</strong></td><td>Key-value lookup</td></tr>
+                    <tr><td><strong>UserDefaults</strong></td><td>User preferences (Theme, Sound toggle)</td><td>Plain text (unencrypted plist)</td><td>Key-value lookup</td></tr>
+                </tbody>
+            </table>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift &mdash; SwiftData vs Keychain</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">import SwiftData
+import Security
+
+// 1️⃣ SWIFTDATA &mdash; Declarative @Model (iOS 17+)
+@Model
+class TransactionItem {
+    var id: UUID
+    var title: String
+    var amount: Double
+    var timestamp: Date
+
+    init(title: String, amount: Double) {
+        self.id = UUID()
+        self.title = title
+        self.amount = amount
+        self.timestamp = Date()
+    }
+}
+
+// 2️⃣ KEYCHAIN &mdash; Hardware-secured sensitive token storage
+enum KeychainHelper {
+    static func saveToken(_ token: String, account: String) -> Bool {
+        let data = Data(token.utf8)
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrAccount: account,
+            kSecValueData: data,
+            kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
+        ]
+        SecItemDelete(query as CFDictionary)
+        return SecItemAdd(query as CFDictionary, nil) == errSecSuccess
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- SWIFT Q5: Push Notifications & APNs Extensions -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">10</span>
+            <h3>Explain the Complete APNs Push Notification Lifecycle, Silent Pushes, and Notification Service Extensions <span class="difficulty diff-hard">Production Systems</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>1. APNs Registration Lifecycle</h4>
+            <ol>
+                <li>App calls <code>UNUserNotificationCenter.requestAuthorization()</code> &rarr; user grants permission.</li>
+                <li>App calls <code>UIApplication.registerForRemoteNotifications()</code>.</li>
+                <li>iOS establishes encrypted TLS connection with Apple Push Notification service (APNs).</li>
+                <li>APNs returns a unique 32-byte <strong>Device Token</strong> to <code>didRegisterForRemoteNotificationsWithDeviceToken</code>.</li>
+                <li>App securely sends this device token to your backend server.</li>
+            </ol>
+
+            <h4>2. Silent Push vs Standard Push</h4>
+            <ul>
+                <li><strong>Standard Push:</strong> Contains <code>alert</code>, <code>sound</code>, and <code>badge</code>. Displays UI banner immediately.</li>
+                <li><strong>Silent Push (Background Fetch):</strong> Contains <code>"content-available": 1</code> with NO alert or sound. iOS wakes the app in the background for up to 30 seconds to download data before user opens it.</li>
+            </ul>
+
+            <h4>3. Notification Service Extension (Rich &amp; Encrypted Pushes)</h4>
+            <p>An extension target that intercepts incoming push notifications <strong>before</strong> they are shown to the user. It allows you to:</p>
+            <ul>
+                <li><strong>Decrypt End-to-End Encrypted Payloads:</strong> Decrypt chat messages using local keys before displaying.</li>
+                <li><strong>Download Rich Media:</strong> Download high-res images, GIFs, or audio attachments from custom CDN URLs and attach them via <code>UNNotificationAttachment</code>.</li>
+                <li><strong>Mutate Content:</strong> Modify alert titles, body text, or thread IDs dynamically.</li>
+            </ul>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift &mdash; NotificationServiceExtension</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">import UserNotifications
+
+class NotificationService: UNNotificationServiceExtension {
+    var contentHandler: ((UNNotificationContent) -> Void)?
+    var bestAttemptContent: UNMutableNotificationContent?
+
+    override func didReceive(
+        _ request: UNNotificationRequest,
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) {
+        self.contentHandler = contentHandler
+        bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
+
+        guard let bestAttemptContent = bestAttemptContent else { return }
+
+        // 1. Decrypt E2E message payload if encrypted
+        if let encryptedText = bestAttemptContent.userInfo["encrypted_body"] as? String {
+            bestAttemptContent.body = SecurityCrypto.decrypt(encryptedText)
+        }
+
+        // 2. Download media attachment if present
+        if let mediaUrlString = bestAttemptContent.userInfo["media_url"] as? String,
+           let mediaUrl = URL(string: mediaUrlString) {
+            downloadAndAttachMedia(url: mediaUrl, to: bestAttemptContent) {
+                contentHandler(bestAttemptContent)
+            }
+        } else {
+            contentHandler(bestAttemptContent)
+        }
+    }
 }</code></pre>
             </div>
         </div></div>
