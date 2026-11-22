@@ -611,6 +611,9 @@
         .theme-arch .section-tag { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
         .theme-advanced .qa-num { background: rgba(244,114,182,0.15); color: var(--accent-pink); }
         .theme-advanced .section-tag { background: rgba(244,114,182,0.15); color: var(--accent-pink); }
+        .theme-round2 .qa-num { background: rgba(34,211,238,0.15); color: var(--accent-cyan); }
+        .theme-round2 .section-tag { background: rgba(34,211,238,0.15); color: var(--accent-cyan); }
+
 
 
         .inline-code {
@@ -633,11 +636,11 @@
         <p>Comprehensive Q&A covering Flutter, Dart, Swift, iOS, Security, Architecture & Coding — with real code snippets and interview tips.</p>
         <div class="hero-stats">
             <div class="stat">
-                <span class="stat-number">49+</span>
+                <span class="stat-number">70+</span>
                 <span class="stat-label">Questions</span>
             </div>
             <div class="stat">
-                <span class="stat-number">7</span>
+                <span class="stat-number">8</span>
                 <span class="stat-label">Categories</span>
             </div>
             <div class="stat">
@@ -662,6 +665,8 @@
         <button class="nav-btn" onclick="switchSection('arch')">🏗️ Architecture</button>
         <button class="nav-btn" onclick="switchSection('coding')">💻 Coding Challenges</button>
         <button class="nav-btn" onclick="switchSection('advanced')">🌟 High-Yield Interview Q&A</button>
+        <button class="nav-btn" onclick="switchSection('round2')">🎯 Round 2: Lead & Deep-Dive</button>
+
     </div>
 </nav>
 
@@ -4173,6 +4178,728 @@ class NotificationService: UNNotificationServiceExtension {
             </div>
         </div></div>
     </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--           ROUND 2 & LEAD ARCHITECT             -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="section-round2" class="section theme-round2">
+    <div class="section-header">
+        <span class="section-tag">Round 2 & Lead Architect</span>
+        <h2>Senior Technical Lead & Round 2 Deep-Dive</h2>
+        <p>In-depth coverage of Security, SSL Pinning Rotation, Cryptography, Concurrency, Architecture, Platform Channels, Memory & Production Debugging.</p>
+    </div>
+    <div class="toolbar">
+        <button class="tool-btn" onclick="toggleAll('section-round2')">⊞ Expand All</button>
+    </div>
+
+    <!-- R01: Project Explanation -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R01</span>
+            <h3>How to Explain Current Projects & Frameworks Used (Blume Health Case Study) <span class="difficulty diff-hard">Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Interviewers ask this to test your architectural ownership, technology selection rationale, and communication clarity. Structure your pitch using the <strong>STAR (Situation, Task, Action, Result)</strong> framework based on <strong>Blume Health (<code>blume_health_flutter_app</code>)</strong>:</p>
+            
+            <div class="tip-box interview">
+                <span class="tip-icon">🎙️</span>
+                <div class="tip-content">
+                    <strong>STAR Framework Pitch — Blume Health</strong>
+                    <p><strong>Situation:</strong> Blume Health is an enterprise digital health and chronic care platform serving patients with personalized health coaching, biometric progress logs, real-time messaging, and telehealth scheduling under strict HIPAA privacy compliance.<br>
+                    <strong>Task:</strong> Architect a scalable, reliable cross-platform mobile client handling offline sync, instantaneous token refresh, zero patient PII leakage, and continuous OTA patch deployment.<br>
+                    <strong>Action:</strong> Implemented a Feature-First Clean Layered Architecture using <strong>flutter_bloc 9.0</strong> for state machines, <strong>Dio 5.7</strong> with a single-flight mutex token refresh interceptor (preventing 401 token storms), <strong>Auth0</strong> with <strong>flutter_secure_storage</strong> (Keychain/Keystore), <strong>Socket.IO</strong> for real-time coach chat, and <strong>Shorebird Code Push</strong> for instantaneous over-the-air hot patches.<br>
+                    <strong>Result:</strong> Sustained a 99.9% crash-free session rate monitored via <strong>Sentry 9.25</strong>, reduced hotfix deployment turnaround from 48 hours to 5 minutes via Shorebird, and achieved full HIPAA compliance with scrubbed network logs.</p>
+                </div>
+            </div>
+
+            <h4>Blume Health Production Technology Stack</h4>
+            <table class="compare-table">
+                <thead><tr><th>Subsystem</th><th>Framework / Package</th><th>Version & Implementation Role</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Architecture</strong></td><td>Feature-First Layered Clean Arch</td><td>Strict boundary: Presentation (UI), Business Logic (BLoC), Data (ServiceRequests), Infrastructure (Storage)</td></tr>
+                    <tr><td><strong>State Management</strong></td><td><code>flutter_bloc</code> + <code>equatable</code></td><td>v9.0.0 — Pure deterministic state machines (<code>FeatureBloc</code>, <code>FeatureEvent</code>, <code>FeatureState</code>) per feature screen</td></tr>
+                    <tr><td><strong>Dependency Injection</strong></td><td><code>get_it</code> + <code>provider</code></td><td>v9.2.1 — Decoupled service locator contracts for NetworkService and Storage</td></tr>
+                    <tr><td><strong>Networking & Resilience</strong></td><td><code>dio</code> + Custom Interceptors</td><td>v5.7.0 — <code>AuthRefreshInterceptor</code> (single-flight mutex for Auth0 tokens), <code>TransientRetryInterceptor</code>, <code>NetworkDebugLogSanitizer</code> (PHI scrub)</td></tr>
+                    <tr><td><strong>Real-Time Communications</strong></td><td><code>socket_io_client</code></td><td>v3.1.4 — Persistent bidirectional WebSockets for real-time patient-coach messaging and telemetry</td></tr>
+                    <tr><td><strong>Navigation & Routing</strong></td><td><code>go_router</code> + <code>app_links</code></td><td>v16.0.0 — Declarative deep linking with universal mobile links into specific health guidance screens</td></tr>
+                    <tr><td><strong>Security & Storage</strong></td><td>Auth0 + <code>flutter_secure_storage</code></td><td>v10.0.0 — Hardware-backed AES-256 Keychain/Keystore token storage, <code>local_auth</code> (Biometrics), <code>envied</code> (Obfuscated compile-time secrets)</td></tr>
+                    <tr><td><strong>OTA Code Push</strong></td><td><code>shorebird_code_push</code></td><td>v2.0.7 — Instantaneous over-the-air Dart engine patching to production without App Store review cycles</td></tr>
+                    <tr><td><strong>Crash Reporting & Monitoring</strong></td><td><code>sentry_flutter</code> + <code>sentry_logging</code></td><td>v9.25.0 — Real-time crash symbolication, breadcrumbs, and performance tracing</td></tr>
+                    <tr><td><strong>Analytics & Experimentation</strong></td><td>Firebase, Mixpanel, Clarity, Statsig</td><td>Session replay heatmaps (Clarity), cohort funnels (Mixpanel), feature flags & A/B testing (Statsig)</td></tr>
+                    <tr><td><strong>Code Quality & Testing</strong></td><td><code>very_good_analysis</code> + <code>bloc_test</code></td><td>Strict lint rules, comprehensive unit testing, and Mocktail state verification</td></tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- R02: SSL Pinning -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R02</span>
+            <h3>What is SSL Pinning and How Does It Work? <span class="difficulty diff-medium">Security</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>SSL/TLS Pinning</strong> ensures that the client application communicates <em>only</em> with the designated, pre-identified server. It bypasses the operating system's default Certificate Authority (CA) Trust Store, rendering <strong>Man-in-the-Middle (MITM)</strong> proxy sniffers (Burp Suite, Charles Proxy, Fiddler) completely ineffective.</p>
+
+            <h4>Handshake Interception & Verification Flow</h4>
+            <ol>
+                <li>Client sends <code>ClientHello</code> to the server.</li>
+                <li>Server returns its X.509 certificate chain (Leaf &rarr; Intermediate &rarr; Root CA).</li>
+                <li>Instead of merely trusting the OS Root CA store, the client intercepts the <code>URLAuthenticationChallenge</code>.</li>
+                <li>The client extracts the public key info (SPKI) or certificate bytes, computes the SHA-256 digest, and checks it against the hardcoded hash.</li>
+                <li>If the hash matches, the connection proceeds; if mismatched, the challenge is aborted immediately.</li>
+            </ol>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — URLSessionDelegate Pinning</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">func urlSession(
+    _ session: URLSession,
+    didReceive challenge: URLAuthenticationChallenge,
+    completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void
+) {
+    guard challenge.protectionSpace.authenticationMethod == NSURLAuthenticationMethodServerTrust,
+          let serverTrust = challenge.protectionSpace.serverTrust else {
+        completionHandler(.cancelAuthenticationChallenge, nil); return
+    }
+
+    // 1. Verify standard anchor integrity
+    var secError: CFError?
+    guard SecTrustEvaluateWithError(serverTrust, &secError) else {
+        completionHandler(.cancelAuthenticationChallenge, nil); return
+    }
+
+    // 2. Extract Server Public Key (SPKI)
+    guard let cert = SecTrustGetCertificateAtIndex(serverTrust, 0),
+          let pubKey = SecCertificateCopyKey(cert),
+          let keyData = SecKeyCopyExternalRepresentation(pubKey, nil) as Data? else {
+        completionHandler(.cancelAuthenticationChallenge, nil); return
+    }
+
+    // 3. Compare SHA-256 hash against pinned hash
+    let hash = SHA256.hash(data: keyData)
+    let hashBase64 = Data(hash).base64EncodedString()
+
+    if hashBase64 == "WoiWRyIOVNa9ihaBciRSC7XHjliYS9VwUGOIud4PB18=" {
+        completionHandler(.useCredential, URLCredential(trust: serverTrust))
+    } else {
+        completionHandler(.cancelAuthenticationChallenge, nil) // Reject MITM!
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R03: Expiring Certificate & Backup Process -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R03</span>
+            <h3>SSL Pinning: Handling Expiring Certificates & Zero-Downtime Backup Process <span class="difficulty diff-hard">Production</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>The Nightmare Scenario:</strong> If you pin a single leaf certificate and it expires, any user who hasn't downloaded the latest app update will be permanently locked out of all backend services.</p>
+
+            <h4>Zero-Downtime Enterprise Rotation Strategy</h4>
+            <ul>
+                <li><strong>1. Pin the SPKI Public Key (Subject Public Key Info), NOT the Leaf Certificate:</strong> When renewing the TLS certificate, reuse the existing Certificate Signing Request (CSR) and private key. The certificate changes, but the public key hash remains identical &mdash; zero app update needed!</li>
+                <li><strong>2. Multi-Key Pinning (Dual-Pinning / N+1 Backup Keys):</strong> Always embed at least two pins:
+                    <ul>
+                        <li><em>Primary Pin:</em> Active production public key.</li>
+                        <li><em>Backup Pin:</em> Cold standby key generated in an offline secure HSM.</li>
+                        <li><em>Intermediate CA Pin:</em> Trusted CA authority public key as an emergency failsafe.</li>
+                    </ul>
+                </li>
+                <li><strong>3. Dynamic Remote Pinning with Cryptographic Verification:</strong> Maintain an encrypted, digitally signed pin configuration hosted on a CDN or cloud worker. If pinning fails, fetch the signed configuration, verify its RSA/ECDSA signature against an embedded master key, update Keychain, and reconnect.</li>
+            </ul>
+
+            <div class="tip-box warning">
+                <span class="tip-icon">⚠️</span>
+                <div class="tip-content">
+                    <strong>Interviewer Trap Question</strong>
+                    <p><em>"Why not pin the Root CA certificate?"</em><br>
+                    <strong>Answer:</strong> Pinning the Root CA weakens security because any fraudulent certificate issued by that same CA (or rogue intermediate authority under that CA) would pass validation, leaving you vulnerable to nation-state or enterprise proxy MITM.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R04: Encryption / Decryption Types -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R04</span>
+            <h3>Encryption & Decryption: Types & Enterprise Mobile Usage <span class="difficulty diff-medium">Security</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Type</th><th>Algorithms</th><th>Key Characteristics</th><th>Mobile Use Cases</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Symmetric</strong></td><td>AES-256-GCM, ChaCha20-Poly1305</td><td>Single secret key for both encrypt/decrypt. Hardware accelerated. Fast for gigabytes of data.</td><td>Offline database encryption (SQLCipher), local caching, bulk API payloads.</td></tr>
+                    <tr><td><strong>Asymmetric</strong></td><td>RSA-2048/4096, ECC (secp256r1, X25519)</td><td>Public key (encrypt) + Private key (decrypt). Computationally expensive. Payload size limited by key length.</td><td>Secure key exchange, digital signatures, token exchange with Secure Enclave.</td></tr>
+                    <tr><td><strong>Hashing (1-Way)</strong></td><td>SHA-256, SHA-3, Argon2, bcrypt</td><td>Irreversible fixed-length digest. Cannot be decrypted.</td><td>Data integrity checksums, certificate fingerprints, password hashing.</td></tr>
+                    <tr><td><strong>Hybrid Crypto</strong></td><td>AES-256 + RSA-2048 (or ECIES)</td><td>Combines speed of symmetric encryption with secure key distribution of asymmetric encryption.</td><td>End-to-End API payload encryption in Banking & Payments apps.</td></tr>
+                </tbody>
+            </table>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">💡</span>
+                <div class="tip-content">
+                    <strong>Why AES-GCM (Galois/Counter Mode) instead of CBC?</strong>
+                    <p>AES-CBC requires separate HMAC hashing for integrity and is vulnerable to padding oracle attacks. <strong>AES-GCM is an AEAD (Authenticated Encryption with Associated Data)</strong> cipher that provides both confidentiality and built-in cryptographic authentication via a 16-byte authentication tag.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R05: How RSA Works -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R05</span>
+            <h3>How RSA Encryption Works Deep Dive <span class="difficulty diff-hard">Cryptography</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>RSA is founded on the <strong>prime factorization hardness problem</strong> &mdash; multiplying two large primes is trivial, but factoring their composite product back into primes is mathematically infeasible for classical computers.</p>
+
+            <h4>Key Generation Algorithm</h4>
+            <ol>
+                <li>Choose two very large prime numbers: <code>p</code> and <code>q</code>.</li>
+                <li>Compute modulus: <code>n = p &times; q</code>.</li>
+                <li>Compute Euler's totient: <code>&phi;(n) = (p - 1)(q - 1)</code>.</li>
+                <li>Select public exponent <code>e</code> such that <code>1 &lt; e &lt; &phi;(n)</code> and <code>gcd(e, &phi;(n)) = 1</code> (typically <code>65537</code>).</li>
+                <li>Compute private exponent <code>d</code> such that: <code>d &times; e &equiv; 1 (mod &phi;(n))</code>.</li>
+                <li><strong>Public Key:</strong> <code>(e, n)</code> &bull; <strong>Private Key:</strong> <code>(d, n)</code>.</li>
+            </ol>
+
+            <h4>Encryption & Decryption Mathematics</h4>
+            <ul>
+                <li><strong>Encrypt:</strong> <code>Ciphertext = (Message)^e mod n</code></li>
+                <li><strong>Decrypt:</strong> <code>Message = (Ciphertext)^d mod n</code></li>
+            </ul>
+
+            <h4>Payload Size Limit & OAEP Padding</h4>
+            <p>For a 2048-bit RSA key (256 bytes), using <strong>OAEP padding with SHA-256</strong>:</p>
+            <p><code>Max Payload = 256 bytes - (2 &times; 32) - 2 = 190 bytes</code>.</p>
+            <p>Because you cannot encrypt more than 190 bytes with RSA-2048, <strong>you never encrypt large API payloads with RSA directly</strong>. Instead, you encrypt a random 32-byte AES key using RSA, and encrypt the large payload using that AES key (Hybrid Scheme).</p>
+        </div></div>
+    </div>
+
+    <!-- R06: NPCI SDK -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R06</span>
+            <h3>NPCI UPI Common Library (CL) SDK: Architecture & Integration <span class="difficulty diff-hard">Fintech</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>In India's UPI ecosystem, the <strong>National Payments Corporation of India (NPCI)</strong> mandates that third-party applications (Google Pay, PhonePe, Paytm, Banking apps) must <strong>never touch or capture the user's UPI PIN in plaintext</strong>.</p>
+
+            <h4>NPCI CL SDK Security Mechanism</h4>
+            <ul>
+                <li><strong>Sandboxed Overlay Surface:</strong> The CL SDK opens an isolated hardware-accelerated window directly on top of the host app.</li>
+                <li><strong>Anti-Tapjacking & FLAG_SECURE:</strong> Prevents screen capturing, screen recording, and external touch event injection.</li>
+                <li><strong>Hardware Cryptographic Handshake:</strong> The SDK obtains a one-time cryptographic challenge token (Salt, Txn ID) and NPCI HSM Public Key.</li>
+                <li><strong>CredBlock Encryption:</strong> When the user inputs their MPIN, the CL SDK immediately encrypts it using NPCI's RSA Public Key and device hardware signatures, producing an opaque base64 string (<code>CredBlock</code>).</li>
+                <li><strong>Opaque Pass-Through:</strong> The host application receives only the opaque encrypted block and forwards it to the PSP bank switch. Only the Remitter Bank's Core Banking System (CBS) HSM can decrypt the PIN.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R07: MVVM Clean Architecture -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R07</span>
+            <h3>MVVM Clean Architecture with End-to-End Login Flow <span class="difficulty diff-medium">Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Clean Architecture separates the codebase into independent concentric layers obeying the <strong>Dependency Inversion Principle</strong>: inner layers (Domain) know nothing about outer layers (UI, Network, Database).</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — Complete Login Clean Flow</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// 1. DOMAIN LAYER (Pure Business Logic - No UIKit/SwiftUI imports)
+struct User: Equatable { let id: String; let email: String; let token: String }
+
+protocol AuthRepositoryProtocol {
+    func login(email: String, pass: String) async throws -> User
+}
+
+final class LoginUseCase {
+    private let repo: AuthRepositoryProtocol
+    init(repo: AuthRepositoryProtocol) { self.repo = repo }
+
+    func execute(email: String, pass: String) async throws -> User {
+        guard email.contains("@"), pass.count >= 6 else { throw AuthError.invalidInput }
+        return try await repo.login(email: email, pass: pass)
+    }
+}
+
+// 2. DATA LAYER (Implements Domain Protocols)
+final class AuthRepositoryImpl: AuthRepositoryProtocol {
+    private let remoteDataSource: AuthRemoteDataSourceProtocol
+    private let keychainDataSource: KeychainDataSourceProtocol
+
+    init(remote: AuthRemoteDataSourceProtocol, keychain: KeychainDataSourceProtocol) {
+        self.remoteDataSource = remote; self.keychainDataSource = keychain
+    }
+
+    func login(email: String, pass: String) async throws -> User {
+        let response = try await remoteDataSource.login(email: email, pass: pass)
+        try keychainDataSource.save(key: "auth_token", value: response.token)
+        return User(id: response.userId, email: email, token: response.token)
+    }
+}
+
+// 3. PRESENTATION LAYER (ViewModel & SwiftUI View)
+@MainActor
+final class LoginViewModel: ObservableObject {
+    @Published var email = ""
+    @Published var password = ""
+    @Published var state: ViewState = .idle
+
+    enum ViewState: Equatable { case idle, loading, success(User), error(String) }
+    private let loginUseCase: LoginUseCase
+
+    init(loginUseCase: LoginUseCase) { self.loginUseCase = loginUseCase }
+
+    func onLoginButtonTapped() async {
+        state = .loading
+        do {
+            let user = try await loginUseCase.execute(email: email, pass: password)
+            state = .success(user)
+        } catch {
+            state = .error(error.localizedDescription)
+        }
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R08: Keychain Services -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R08</span>
+            <h3>Where Should Sensitive Data Be Stored? iOS Keychain & Secure Enclave <span class="difficulty diff-medium">iOS / Security</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>Never store sensitive data (tokens, passwords, encryption keys, PII) in <code>UserDefaults</code> or unencrypted SQLite/CoreData plists.</strong> UserDefaults is written in plaintext to the application sandbox container and can be dumped with basic jailbreak tools or desktop file explorers.</p>
+
+            <h4>iOS Keychain Architecture</h4>
+            <ul>
+                <li>Stored in a SQLite database outside the application container, managed directly by the <code>securityd</code> daemon.</li>
+                <li>Encrypted with a hardware-fused AES-256 key embedded inside Apple's Application Processor.</li>
+                <li><strong>Accessibility Level:</strong> Always use <code>kSecAttrAccessibleWhenUnlockedThisDeviceOnly</code> to ensure the item cannot be transferred to iCloud backups or restored onto another physical iPhone.</li>
+                <li><strong>Secure Enclave Processor (SEP):</strong> For private keys, generate keys with <code>kSecAttrTokenIDSecureEnclave</code> and require Biometric authentication (Face ID / Touch ID) via <code>SecAccessControl</code>.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R09: Swift Concurrency Multi-API -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R09</span>
+            <h3>Swift Concurrency: Orchestrating 3-4 Multiple APIs in Parallel <span class="difficulty diff-medium">Swift</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>Scenario:</strong> You need to load User Profile, Account Balance, and Notification Badges concurrently without freezing the UI or waiting sequentially.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — async let vs TaskGroup</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">// 1. Fixed heterogeneous calls using `async let`
+func loadDashboard() async throws -> DashboardData {
+    async let profile = apiService.fetchProfile()
+    async let balance = apiService.fetchBalance()
+    async let notifications = apiService.fetchNotifications()
+
+    // Runs all 3 concurrently; awaits only when all are ready
+    return try await DashboardData(
+        profile: profile,
+        balance: balance,
+        notifications: notifications
+    )
+}
+
+// 2. Dynamic homogeneous calls using `withThrowingTaskGroup`
+func fetchMultipleAccounts(ids: [String]) async throws -> [Account] {
+    try await withThrowingTaskGroup(of: Account.self) { group in
+        for id in ids {
+            group.addTask {
+                try await self.apiService.fetchAccount(id: id)
+            }
+        }
+        var accounts: [Account] = []
+        for try await account in group {
+            accounts.append(account)
+        }
+        return accounts
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R10: GCD vs OperationQueue vs Actors -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R10</span>
+            <h3>GCD vs OperationQueue vs Actors & Deadlock Condition <span class="difficulty diff-hard">Concurrency</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Comparison Overview</h4>
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>Grand Central Dispatch (GCD)</th><th>OperationQueue</th><th>Swift Actors</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Abstraction</strong></td><td>Low-level C-based C-blocks API</td><td>High-level OOP wrapper over GCD</td><td>Language-level safe concurrency primitive</td></tr>
+                    <tr><td><strong>Dependencies</strong></td><td>Difficult to coordinate</td><td>Built-in (<code>opB.addDependency(opA)</code>)</td><td>Structured async/await ordering</td></tr>
+                    <tr><td><strong>Cancellation</strong></td><td>Manual boolean flags</td><td>Built-in (<code>cancel()</code> flag)</td><td>Cooperative (<code>Task.isCancelled</code>)</td></tr>
+                    <tr><td><strong>Data Race Safety</strong></td><td>Manual locks / concurrent barrier</td><td>Manual synchronization</td><td><strong>Compile-time enforced isolation</strong></td></tr>
+                </tbody>
+            </table>
+
+            <h4>Classic Deadlock Condition: Synchronous dispatch to Current Serial Queue</h4>
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — Deadlock Example</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">let serialQueue = DispatchQueue(label: "com.app.serial")
+serialQueue.async {
+    print("Task 1 starts")
+    // DEADLOCK! serialQueue waits for outer block to finish,
+    // but outer block is waiting for inner sync block to execute!
+    serialQueue.sync {
+        print("Task 2 will never run")
+    }
+}</code></pre>
+            </div>
+            <p><strong>Rule:</strong> Never invoke <code>.sync</code> on the current serial queue, and never call <code>DispatchQueue.main.sync</code> from the main thread.</p>
+        </div></div>
+    </div>
+
+    <!-- R11: Crashlytics -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R11</span>
+            <h3>Crashlytics Integration & Symbolication Pipeline (dSYM) <span class="difficulty diff-medium">DevOps</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>Crashlytics</strong> intercepts app crashes by attaching to low-level operating system hooks: <strong>Mach exception handlers</strong> and <strong>POSIX signals</strong> (<code>SIGSEGV</code>, <code>SIGBUS</code>, <code>SIGABRT</code>).</p>
+
+            <h4>Internal Architecture & Flow</h4>
+            <ol>
+                <li><strong>Async-Signal-Safe Dump:</strong> When memory corruption or unhandled exception occurs, standard heap memory is corrupt. Crashlytics writes a raw minidump (<code>.crash</code>) directly to disk using unbuffered system calls.</li>
+                <li><strong>Upload on Next Launch:</strong> Crash reports are transmitted asynchronously to Firebase ingestion servers during the subsequent app startup.</li>
+                <li><strong>Symbolication with dSYM:</strong> Raw crash dumps contain hex memory addresses (e.g. <code>0x00000001042a19c4</code>). The matching <strong>dSYM (Debug Symbol)</strong> file contains DWARF tables mapping memory offsets back to exact filenames, functions, and line numbers.</li>
+            </ol>
+        </div></div>
+    </div>
+
+    <!-- R12: BLoC vs Provider vs Riverpod -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R12</span>
+            <h3>Dart State Management: BLoC vs Provider vs Riverpod <span class="difficulty diff-medium">Flutter</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <table class="compare-table">
+                <thead><tr><th>Feature</th><th>BLoC (flutter_bloc)</th><th>Provider</th><th>Riverpod 2.x</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Core Concept</strong></td><td>Reactive Streams (Events &rarr; States)</td><td><code>InheritedWidget</code> wrapper</td><td>Global Declarative Dependency Graph</td></tr>
+                    <tr><td><strong>BuildContext Dependency</strong></td><td>Required (<code>BlocProvider.of(context)</code>)</td><td>Required (<code>Provider.of(context)</code>)</td><td><strong>Independent</strong> (<code>WidgetRef</code> / Ref)</td></tr>
+                    <tr><td><strong>Compile-Time Safety</strong></td><td>High</td><td>Runtime <code>ProviderNotFoundException</code></td><td><strong>100% Compile-safe</strong></td></tr>
+                    <tr><td><strong>Testability</strong></td><td><code>blocTest</code> (easy event simulation)</td><td>Requires mocking context</td><td>Override providers with zero mocks</td></tr>
+                    <tr><td><strong>Best Fit</strong></td><td>Fintech & Banking state machines</td><td>Small-to-medium utility apps</td><td>Modern scalable caching apps</td></tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+
+    <!-- R13: Platform Channels -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R13</span>
+            <h3>Dart Platform Channels: MethodChannel, EventChannel & Binary Serialization <span class="difficulty diff-medium">Flutter</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Platform Channels bridge Flutter Dart code with native platform code (Swift / Kotlin) using binary message serialization across the C++ Flutter engine.</p>
+            <ul>
+                <li><strong>MethodChannel:</strong> Asynchronous request-response messaging.</li>
+                <li><strong>EventChannel:</strong> Continuous native-to-Flutter streaming (e.g., GPS location updates, BLE byte streams).</li>
+                <li><strong>BasicMessageChannel:</strong> Structured message passing with custom codecs (JSON, String, Binary).</li>
+                <li><strong>Serialization:</strong> All arguments are encoded into binary buffers via <code>StandardMessageCodec</code>.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R14: Performance Optimization -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R14</span>
+            <h3>How to Optimise and Improve Performance of an iOS Application <span class="difficulty diff-hard">iOS</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>1. App Launch Time (TTFF - Time to First Frame)</h4>
+            <ul>
+                <li>Reduce dynamic framework count (prefer static libraries to minimize <code>dyld</code> dyld3 loader rebinding time).</li>
+                <li>Move analytics/logging initialization off <code>didFinishLaunchingWithOptions</code> using background Tasks.</li>
+            </ul>
+
+            <h4>2. Memory Footprint & Image Downsampling</h4>
+            <p>Avoid loading massive 12MP images directly into UI. Use <code>CGImageSourceCreateThumbnailAtIndex</code> to decode only the required display dimensions directly into memory.</p>
+
+            <h4>3. Smooth 120Hz ProMotion Scrolling</h4>
+            <ul>
+                <li>Eliminate offscreen rendering passes: avoid corner radius masking on dynamic views, set <code>layer.isOpaque = true</code>.</li>
+                <li>Use <code>UICollectionViewDiffableDataSource</code> for background hash diffing.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R15: XCUITest -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R15</span>
+            <h3>XCUITest Framework & Page Object Pattern <span class="difficulty diff-medium">Testing</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>XCUITest executes in an isolated process, inspecting your app through Apple's Accessibility layer. Adopt the <strong>Page Object Pattern</strong> to keep UI tests clean and resilient against UI refactoring.</p>
+
+            <div class="code-block">
+                <div class="code-header">
+                    <span class="code-lang"><span class="dot dot-swift"></span>Swift — Page Object Test Pattern</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                </div>
+                <pre><code class="language-swift">final class TransferPage {
+    private let app: XCUIApplication
+    init(app: XCUIApplication) { self.app = app }
+
+    var amountField: XCUIElement { app.textFields["transfer_amount_input"] }
+    var sendButton: XCUIElement { app.buttons["confirm_send_btn"] }
+
+    func enterAmount(_ amount: String) -> Self {
+        amountField.tap(); amountField.typeText(amount); return self
+    }
+
+    func confirm() { sendButton.tap() }
+}
+
+final class PaymentUITests: XCTestCase {
+    func testMoneyTransfer() {
+        let app = XCUIApplication()
+        app.launch()
+        TransferPage(app: app).enterAmount("500").confirm()
+        XCTAssertTrue(app.staticTexts["Transfer Successful"].waitForExistence(timeout: 5))
+    }
+}</code></pre>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R16: CI/CD Pipeline -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R16</span>
+            <h3>Mobile CI/CD Pipeline: Fastlane & GitHub Actions <span class="difficulty diff-medium">DevOps</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>An enterprise mobile pipeline automates linting, test execution, signing certificate management, and app store distribution.</p>
+            <ul>
+                <li><strong>fastlane match:</strong> Synchronizes iOS provisioning profiles and signing certificates across team members using an encrypted Git / S3 repository (eliminating certificate chaos).</li>
+                <li><strong>fastlane scan:</strong> Runs unit and integration test suites in headless simulators.</li>
+                <li><strong>fastlane gym:</strong> Builds and archives the production release IPA/AAB.</li>
+                <li><strong>fastlane pilot:</strong> Deploys automatically to Apple TestFlight with release notes.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R17: SOLID Principles -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R17</span>
+            <h3>SOLID Principles Applied to Mobile Development <span class="difficulty diff-medium">Architecture</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <ul>
+                <li><strong>S - Single Responsibility:</strong> A ViewController only handles UI bindings. Network requests belong in an API service; validation belongs in a Validator.</li>
+                <li><strong>O - Open/Closed:</strong> Extend behavior via protocols/polymorphism without editing existing production code (e.g., <code>PaymentGatewayProtocol</code>).</li>
+                <li><strong>L - Liskov Substitution:</strong> Subtypes must be substitutable for base types without breaking runtime contracts.</li>
+                <li><strong>I - Interface Segregation:</strong> Break bloated interfaces into small, cohesive protocols (e.g. <code>ReadableRepository</code> and <code>WritableRepository</code>).</li>
+                <li><strong>D - Dependency Inversion:</strong> Depend on abstractions (protocols), not concrete implementations, enabling test mocks.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R18: ARC & Memory Management -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R18</span>
+            <h3>ARC (Automatic Reference Counting) & Memory Management <span class="difficulty diff-medium">iOS</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Swift manages heap memory using <strong>ARC</strong>, tracking the number of active strong references to each class instance. When retain count drops to 0, memory is instantly reclaimed.</p>
+
+            <h4>Retain Cycles & Capture Lists</h4>
+            <p>When two objects strongly reference each other, their retain count never reaches 0. Break cycles using <code>[weak self]</code> in escaping closures:</p>
+            <ul>
+                <li><strong>weak:</strong> Zeroing weak reference; automatically becomes <code>nil</code> if deallocated (must be optional).</li>
+                <li><strong>unowned:</strong> Non-zeroing reference; assumes target is alive. Crashes with <code>EXC_BAD_ACCESS</code> if accessed after deallocation.</li>
+                <li><strong>autoreleasepool:</strong> Drains temporary autoreleased Objective-C objects immediately in tight loops rather than waiting for RunLoop idle.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R19: Scenario 1 - Prod vs Dev Crash -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R19</span>
+            <h3>Scenario: App Crashes in Production but Never in Development <span class="difficulty diff-hard">Troubleshooting</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>This is a classic senior interview scenario. Here is how to systematically troubleshoot and resolve it:</p>
+            
+            <h4>1. Root Cause Analysis (Why Prod Behaves Differently)</h4>
+            <ul>
+                <li><strong>Compiler Optimization Level:</strong> Dev builds run with <code>-Onone</code>; Release builds run with <code>-O</code> (Fast) or <code>-Osize</code>. Optimizations reorder instructions, inline methods, and expose dormant multithreaded data races.</li>
+                <li><strong>Minification & Code Stripping:</strong> ProGuard / R8 (Android) or aggressive dead-code stripping may have obfuscated or stripped reflection-based JSON model fields.</li>
+                <li><strong>Environment Discrepancies:</strong> Release builds enforce strict SSL Pinning and production endpoints; dev builds bypass cert verification or use local proxies.</li>
+                <li><strong>Missing Release Entitlements:</strong> Push notification entitlements or Keychain Access Groups misconfigured in Release provisioning profiles.</li>
+            </ul>
+
+            <h4>2. Systematic Resolution Strategy</h4>
+            <ol>
+                <li>Fetch raw crash reports and symbolicate using the exact matching **dSYM / mapping.txt** via Firebase Crashlytics or Xcode Organizer.</li>
+                <li>Run a local Release build connected to LLDB: <code>flutter run --release</code> or Xcode Run Scheme configured with Build Configuration = Release.</li>
+                <li>Inspect Xcode Thread Sanitizer (TSan) for data races.</li>
+            </ol>
+        </div></div>
+    </div>
+
+    <!-- R20: Scenario 2 - 200MB Data Display -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R20</span>
+            <h3>Scenario: Displaying >200MB Massive Dataset with Minimum Waiting <span class="difficulty diff-hard">Performance</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>The Challenge:</strong> Parsing a 200MB JSON payload on the main thread will lock the UI event loop for seconds, triggering iOS watchdog kill (<code>0x8badf00d</code>) or Android ANR.</p>
+
+            <h4>Architectural Solution</h4>
+            <ul>
+                <li><strong>1. Offload to Background Isolate / Task:</strong> In Flutter, run JSON parsing in a separate memory space using <code>Isolate.run()</code>; in Swift, use background cooperative tasks with <code>URLSession.bytes</code>.</li>
+                <li><strong>2. Chunked Streaming & Local SQLite Persistence:</strong> Stream records in batches directly into an indexed local database (Drift, Isar, or CoreData/SQLite). Never keep 200MB of raw objects in active RAM.</li>
+                <li><strong>3. Viewport Virtualization:</strong> Use <code>ListView.builder</code> (Flutter) or <code>UICollectionViewDiffableDataSource</code> (iOS) to instantiate only the 10-15 rows visible in the viewport.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R21: Scenario 3 - Platform Channel Not Receiving Data -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R21</span>
+            <h3>Scenario: Platform Channel Implemented but No Data Received in Flutter <span class="difficulty diff-medium">Debugging</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <h4>Checklist for Silent Platform Channel Failures</h4>
+            <ol>
+                <li><strong>Registration Timing:</strong> If Flutter calls the platform channel during startup before <code>setMethodCallHandler</code> is registered in native <code>AppDelegate</code> / <code>MainActivity</code>, the call is dropped silently.</li>
+                <li><strong>Main Thread Dispatch:</strong> Native responses must be dispatched back to Flutter on the <strong>Platform Main UI Thread</strong>. Calling <code>result(data)</code> from a background GCD queue fails:
+                    <br><code>DispatchQueue.main.async { result(data) }</code>.</li>
+                <li><strong>Typo in Channel or Method Name:</strong> Method names are string-matched; ensure exact casing across Dart and Swift.</li>
+                <li><strong>Uncaught Native Exception:</strong> If native code throws an unhandled exception before reaching <code>result(...)</code>, Flutter hangs indefinitely. Always wrap in <code>do-catch</code> and call <code>result(FlutterError(...))</code>.</li>
+            </ol>
+        </div></div>
+    </div>
+
+    <!-- R22: Scenario 4 - High Performance Interop (Dart FFI & Pigeon) -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R22</span>
+            <h3>Beyond MethodChannels: Dart FFI & Type-Safe Pigeon <span class="difficulty diff-hard">Interop</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Standard <code>MethodChannel</code> serializes and copies every payload byte across the platform boundary on the main thread, introducing overhead for video frames, cryptography, or heavy BLE streams.</p>
+            
+            <h4>Modern High-Performance Alternatives</h4>
+            <ul>
+                <li><strong>Pigeon (Type-Safe Code Generation):</strong> Compiles a shared interface schema into strongly typed Swift, Kotlin, and Dart classes. Eliminates string method matching and runtime type casting.</li>
+                <li><strong>Dart FFI (<code>dart:ffi</code> - Foreign Function Interface):</strong> Directly calls native C/C++/Rust dynamic libraries (<code>.dylib</code> / <code>.so</code>) with <strong>zero serialization overhead</strong>, sharing memory pointers directly. Ideal for high-speed cryptographic hashing and image manipulation.</li>
+            </ul>
+        </div></div>
+    </div>
+
+    <!-- R23: Scenario 5 - Struct vs Class Race Condition -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R23</span>
+            <h3>Struct vs Class Concurrency: Can Structs Suffer Data Races? <span class="difficulty diff-hard">Swift</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p><strong>Common Misconception:</strong> <em>"Structs are value types copied on assignment, so they are always thread-safe."</em></p>
+            <p><strong>The Reality:</strong> Structs are value types, but <strong>a shared variable holding a struct can still suffer data races</strong> if accessed or mutated concurrently from multiple threads (e.g., mutating an array in a shared singleton).</p>
+            
+            <div class="tip-box interview">
+                <span class="tip-icon">🛡️</span>
+                <div class="tip-content">
+                    <strong>The Solution: Swift 6 Actors</strong>
+                    <p>Wrap shared mutable state inside an <code>actor</code>. Actors provide compile-time data race safety by ensuring that all accesses and mutations are serialized.</p>
+                </div>
+            </div>
+        </div></div>
+    </div>
+
+    <!-- R24: Counter-Questioning Survival Guide -->
+    <div class="qa-card">
+        <div class="qa-question" onclick="toggleCard(this)">
+            <span class="qa-num">R24</span>
+            <h3>Senior Interview Counter-Questioning Survival Matrix <span class="difficulty diff-hard">Lead Guide</span></h3>
+            <span class="qa-toggle">+</span>
+        </div>
+        <div class="qa-answer"><div class="qa-answer-inner">
+            <p>Interviewers frequently probe with counter-questions to test whether you memorized concepts or implemented them in production. Use these battle-tested responses:</p>
+
+            <table class="compare-table">
+                <thead><tr><th>Initial Topic</th><th>Interviewer Trap / Counter-Question</th><th>Winning Architectural Defense</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>SSL Pinning</strong></td><td><em>"What if the cert expires tomorrow and users haven't updated?"</em></td><td>"We pin the **SPKI Public Key Hash**, not the leaf cert. We renew the certificate reusing the same key pair (CSR reuse). Furthermore, our app bundles a secondary cold backup pin."</td></tr>
+                    <tr><td><strong>Swift Concurrency</strong></td><td><em>"What is Actor Reentrancy and why is it dangerous?"</em></td><td>"An actor suspends at `await` points, allowing another task to execute before the first resumes. State can change across suspension points; always re-verify assumptions immediately following `await`."</td></tr>
+                    <tr><td><strong>Production Crash</strong></td><td><em>"Why does Crashlytics show raw hex addresses instead of line numbers?"</em></td><td>"Missing dSYM files. For App Store builds, Apple recompiles symbols. Download dSYMs from App Store Connect and run `upload-symbols` to symbolicate."</td></tr>
+                    <tr><td><strong>Architecture</strong></td><td><em>"Why not make network calls directly inside ViewModel?"</em></td><td>"It violates SRP and couples UI logic to HTTP transport, preventing independent unit testing, mock injection, and caching layer reuse."</td></tr>
+                    <tr><td><strong>Platform Channels</strong></td><td><em>"Why is streaming camera frames over MethodChannel slow?"</em></td><td>"MethodChannel copies and serializes every byte via StandardMessageCodec on the main thread. Use the `Texture` widget or `dart:ffi` with shared memory pointers instead."</td></tr>
+                </tbody>
+            </table>
+        </div></div>
+    </div>
+
 </div>
 
 </main>

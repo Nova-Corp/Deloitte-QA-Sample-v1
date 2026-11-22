@@ -1,0 +1,52 @@
+1. About current projects, which frameworks frameworks u have used explain.
+2. What is ssl pinning. How it works.
+
+3. Ssl pinning-  suppose ur certificate is expiring recently. How u will handle it.
+
+4. Encryption and decryption..  and types.
+
+5. How RSA encryption works
+
+6. How NPCI SDK works and integration.
+
+7. Mvvm clean architecture explain. Explain with loginview example.
+
+8. About keychain ..where should store sensitive data .
+
+9. Swift concurrency - suppose need to call  3-4 or multiple apis.  How will u call. And async await.
+
+10. GCD , operation queue, actors, deadlock condition.
+
+11. Crashanalytics integration. How it works
+
+12. Dart bloc, provider, riverpod
+
+13. Dart - platform channel
+
+14. How u can optimise and improve performance  ur Ios application
+
+15.  Xcuitest cases  
+
+16. Have u worked on CICD.
+
+17. Solid principal explain.
+
+18. Arc and . memory management expaly.
+
+19. Suppose ur app is getting crash in production.how will u  handle it, check it
+
+if you are facing any crash in production build same not appearing in dev what would u do?
+
+crash happened in production how to identify and tools(crash analytics, xcode and flutter tools)
+
+>200MB data display to user with showing minimum waiting
+
+implemented platform channeling but still not receiving any data to flutter code
+
+SSL pinning with backup process suppose certificate updated to server
+
+platform channel type but different way
+
+struct vs class, concurrency question(Maybe, not sure)
+
+counter questioning based on candidate ans.
