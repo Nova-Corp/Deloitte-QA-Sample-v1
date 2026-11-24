@@ -15,7 +15,8 @@ A comprehensive, interactive, and visually styled technical interview guide cove
   - *Swift/iOS*: Automatic Reference Counting (ARC) in-depth, retain cycles, weak vs unowned, autoreleasepool, Swift 6 Data Race Safety & Sendable, Coordinator Pattern & VIPER architecture, SwiftData vs Core Data vs Keychain, Push notifications lifecycle & Notification Service Extensions.
 - **🎯 Round 2 & Technical Lead Deep-Dive (New Section)**:
   - Complete guide in [ROUND_2_INTERVIEW_ANALYSIS.md](file:///Users/sparkout/Documents/Deloitte-QA-Sample/docs/ROUND_2_INTERVIEW_ANALYSIS.md) and interactive tab in [docs/index.html](file:///Users/sparkout/Documents/Deloitte-QA-Sample/docs/index.html).
-  - Covers Zero-Downtime SSL Pinning backup rotation, RSA math & AES-GCM hybrid encryption, NPCI UPI Common Library (CL) SDK, MVVM Clean Architecture end-to-end login flow, Keychain & Secure Enclave, Swift Concurrency multi-API orchestration, Threading/Deadlock scenarios, Crashlytics dSYM internals, BLoC vs Provider vs Riverpod, Platform channel debugging & Dart FFI, iOS performance profiling, XCUITest Page Object pattern, Fastlane CI/CD, SOLID & ARC, and real-world production incident response.
+  - Exportable Blume Health CI/CD Context in [BLUME_HEALTH_CICD_CONTEXT.md](file:///Users/sparkout/Documents/Deloitte-QA-Sample/docs/BLUME_HEALTH_CICD_CONTEXT.md).
+  - Covers Zero-Downtime SSL Pinning backup rotation, RSA math & AES-GCM hybrid encryption, NPCI UPI Common Library (CL) SDK, MVVM Clean Architecture end-to-end login flow, Keychain & Secure Enclave, Swift Concurrency multi-API orchestration, Threading/Deadlock scenarios, Crashlytics dSYM internals, BLoC vs Provider vs Riverpod, Platform channel debugging & Dart FFI, iOS performance profiling, XCUITest Page Object pattern, Fastlane CI/CD & Xcode Cloud migration to GitHub Actions, SOLID & ARC, and real-world production incident response.
 
 ---
 

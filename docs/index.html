@@ -4209,9 +4209,9 @@ class NotificationService: UNNotificationServiceExtension {
                 <div class="tip-content">
                     <strong>STAR Framework Pitch — Blume Health</strong>
                     <p><strong>Situation:</strong> Blume Health is an enterprise digital health and chronic care platform serving patients with personalized health coaching, biometric progress logs, real-time messaging, and telehealth scheduling under strict HIPAA privacy compliance.<br>
-                    <strong>Task:</strong> Architect a scalable, reliable cross-platform mobile client handling offline sync, instantaneous token refresh, zero patient PII leakage, and continuous OTA patch deployment.<br>
-                    <strong>Action:</strong> Implemented a Feature-First Clean Layered Architecture using <strong>flutter_bloc 9.0</strong> for state machines, <strong>Dio 5.7</strong> with a single-flight mutex token refresh interceptor (preventing 401 token storms), <strong>Auth0</strong> with <strong>flutter_secure_storage</strong> (Keychain/Keystore), <strong>Socket.IO</strong> for real-time coach chat, and <strong>Shorebird Code Push</strong> for instantaneous over-the-air hot patches.<br>
-                    <strong>Result:</strong> Sustained a 99.9% crash-free session rate monitored via <strong>Sentry 9.25</strong>, reduced hotfix deployment turnaround from 48 hours to 5 minutes via Shorebird, and achieved full HIPAA compliance with scrubbed network logs.</p>
+                    <strong>Task:</strong> Architect a scalable, reliable cross-platform mobile client handling offline sync, instantaneous token refresh, zero patient PII leakage, automated dual-store CI/CD, and continuous OTA patch deployment.<br>
+                    <strong>Action:</strong> Implemented a Feature-First Clean Layered Architecture using <strong>flutter_bloc 9.0</strong> for state machines, <strong>Dio 5.7</strong> with a single-flight mutex token refresh interceptor (preventing 401 token storms), <strong>Auth0</strong> with <strong>flutter_secure_storage</strong> (Keychain/Keystore), <strong>Socket.IO</strong> for real-time coach chat, <strong>migrated iOS from Xcode Cloud to a unified GitHub Actions + release-please</strong> pipeline for automated semantic releases, and integrated <strong>Shorebird Code Push</strong> for instantaneous over-the-air hot patches.<br>
+                    <strong>Result:</strong> Sustained a 99.9% crash-free session rate monitored via <strong>Sentry 9.25</strong>, reduced hotfix deployment turnaround from 48 hours to 5 minutes via Shorebird, achieved full HIPAA compliance with scrubbed network logs, and established a fully automated, centralized CI/CD release workflow for both iOS and Android.</p>
                 </div>
             </div>
 
@@ -4226,6 +4226,7 @@ class NotificationService: UNNotificationServiceExtension {
                     <tr><td><strong>Real-Time Communications</strong></td><td><code>socket_io_client</code></td><td>v3.1.4 — Persistent bidirectional WebSockets for real-time patient-coach messaging and telemetry</td></tr>
                     <tr><td><strong>Navigation & Routing</strong></td><td><code>go_router</code> + <code>app_links</code></td><td>v16.0.0 — Declarative deep linking with universal mobile links into specific health guidance screens</td></tr>
                     <tr><td><strong>Security & Storage</strong></td><td>Auth0 + <code>flutter_secure_storage</code></td><td>v10.0.0 — Hardware-backed AES-256 Keychain/Keystore token storage, <code>local_auth</code> (Biometrics), <code>envied</code> (Obfuscated compile-time secrets)</td></tr>
+                    <tr><td><strong>CI/CD & Release Automation</strong></td><td>GitHub Actions + <code>release-please</code></td><td>Migrated from Xcode Cloud to centralized trunk-based pipeline: conventional commit semver, automated Google Play & App Store submissions</td></tr>
                     <tr><td><strong>OTA Code Push</strong></td><td><code>shorebird_code_push</code></td><td>v2.0.7 — Instantaneous over-the-air Dart engine patching to production without App Store review cycles</td></tr>
                     <tr><td><strong>Crash Reporting & Monitoring</strong></td><td><code>sentry_flutter</code> + <code>sentry_logging</code></td><td>v9.25.0 — Real-time crash symbolication, breadcrumbs, and performance tracing</td></tr>
                     <tr><td><strong>Analytics & Experimentation</strong></td><td>Firebase, Mixpanel, Clarity, Statsig</td><td>Session replay heatmaps (Clarity), cohort funnels (Mixpanel), feature flags & A/B testing (Statsig)</td></tr>
@@ -4721,17 +4722,32 @@ final class PaymentUITests: XCTestCase {
     <div class="qa-card">
         <div class="qa-question" onclick="toggleCard(this)">
             <span class="qa-num">R16</span>
-            <h3>Mobile CI/CD Pipeline: Fastlane & GitHub Actions <span class="difficulty diff-medium">DevOps</span></h3>
+            <h3>Mobile CI/CD Pipeline: Xcode Cloud Migration, GitHub Actions & Shorebird <span class="difficulty diff-hard">DevOps</span></h3>
             <span class="qa-toggle">+</span>
         </div>
         <div class="qa-answer"><div class="qa-answer-inner">
-            <p>An enterprise mobile pipeline automates linting, test execution, signing certificate management, and app store distribution.</p>
-            <ul>
-                <li><strong>fastlane match:</strong> Synchronizes iOS provisioning profiles and signing certificates across team members using an encrypted Git / S3 repository (eliminating certificate chaos).</li>
-                <li><strong>fastlane scan:</strong> Runs unit and integration test suites in headless simulators.</li>
-                <li><strong>fastlane gym:</strong> Builds and archives the production release IPA/AAB.</li>
-                <li><strong>fastlane pilot:</strong> Deploys automatically to Apple TestFlight with release notes.</li>
-            </ul>
+            <p>An enterprise mobile CI/CD pipeline unifies testing, semantic release versioning, code signing, and dual-store distribution in a single automated flow.</p>
+
+            <div class="tip-box interview">
+                <span class="tip-icon">🚀</span>
+                <div class="tip-content">
+                    <strong>Why We Migrated from Xcode Cloud to GitHub Actions</strong>
+                    <p>While Xcode Cloud handled basic iOS builds, it ran in an isolated silo from Android, required manual version coordination, and crucially <strong>clashed with Shorebird Code Push</strong>: Shorebird requires recording an exact release binary hash during build; Xcode Cloud's separate out-of-band archive produced differing binary hashes, breaking OTA patch delivery. Migrating to GitHub Actions unified Android, iOS, and Shorebird under a single automated trunk-based engine.</p>
+                </div>
+            </div>
+
+            <h4>Pipeline Architecture Breakdown</h4>
+            <table class="compare-table">
+                <thead><tr><th>Pipeline Component</th><th>Technology</th><th>Implementation Details</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>PR Quality Gates</strong></td><td>GitHub Actions (<code>pr-checks.yml</code>)</td><td>Runs <code>very_good_analysis</code>, unit tests, schema checks, PHI masking contracts, and secret scans on pull requests targeting <code>main</code>.</td></tr>
+                    <tr><td><strong>Semantic Versioning</strong></td><td>Google <code>release-please</code></td><td>Parses Conventional Commits (<code>feat</code>, <code>fix</code>), maintains the release PR, bumps <code>versionName</code> in <code>pubspec.yaml</code>, generates <code>CHANGELOG.md</code>, cuts <code>vX.Y.Z</code> tags, and triggers production store builds.</td></tr>
+                    <tr><td><strong>Build Number Provenance</strong></td><td>Git Rev-List Count</td><td>Decouples marketing semver from store build number: generated in CI as <code>git rev-list --count HEAD</code> and injects <code>APP_GIT_SHA</code>, <code>APP_BUILD</code>, and <code>SENTRY_RELEASE</code> via <code>--dart-define</code>.</td></tr>
+                    <tr><td><strong>Android Production</strong></td><td><code>android-build-production.yml</code></td><td>Builds release AAB, uploads ProGuard/R8 mappings and Sentry symbols, and deploys directly to Google Play's <code>production</code> track with 100% rollout.</td></tr>
+                    <tr><td><strong>iOS Production</strong></td><td><code>ios-build-production.yml</code></td><td>macOS runner, signs IPA using App Store Connect API keys, uploads to TestFlight/App Store, sets automatic release after Apple approval, and uploads dSYMs.</td></tr>
+                    <tr><td><strong>OTA Hot-Patching</strong></td><td><code>shorebird-*-production-patch.yml</code></td><td>Manual <code>workflow_dispatch</code> lane allowing engineers to deploy Dart AOT runtime hotfixes directly to production users in under 5 minutes without App Store review.</td></tr>
+                </tbody>
+            </table>
         </div></div>
     </div>
 

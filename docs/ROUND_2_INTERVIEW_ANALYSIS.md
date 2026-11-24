@@ -51,7 +51,8 @@
 >
 > **Navigation, Release Tooling & Monitoring:**
 > - **Navigation:** **`go_router` (v16.0)** with **`app_links`** for deep linking into specific health guidance screens.
-> - **Over-The-Air (OTA) Hot-Patching:** Integrated **`shorebird_code_push` (v2.0)**, enabling instant over-the-air Dart engine patching to production users without waiting 24–48 hours for App Store review cycles.
+> - **CI/CD Modernization (Xcode Cloud → GitHub Actions + Release Please):** We initially built iOS via Xcode Cloud and Android out-of-band. I migrated both platforms to a centralized trunk-based **GitHub Actions** engine utilizing Google's **`release-please`**. This automated semantic versioning (`vX.Y.Z`), parsed conventional commits to generate changelogs, decoupled the marketing `versionName` from the CI-computed build number (`git rev-list --count HEAD`), and orchestrated parallel store releases to Google Play and Apple App Store Review.
+> - **Over-The-Air (OTA) Hot-Patching:** Integrated **`shorebird_code_push` (v2.0)** with dedicated patch workflows, enabling instant over-the-air Dart engine patching to production users without waiting 24–48 hours for App Store review cycles.
 > - **Observability & Analytics:** **`sentry_flutter` (v9.25)** for real-time crash capture and breadcrumbs, **Firebase Analytics**, **Microsoft Clarity** session replays, **Mixpanel** user engagement cohorts, and **Statsig** for feature flags."
 
 ---
@@ -296,16 +297,33 @@ final class LoginViewModel: ObservableObject {
 
 ---
 
-## 16. Mobile CI/CD Pipeline (Fastlane + GitHub Actions)
+## 16. Mobile CI/CD Pipeline: Xcode Cloud Migration, GitHub Actions & Shorebird
 
-### Executive Interview Answer
-> "Our automated pipeline triggers on pull requests and tags:
+### Executive Interview Answer (Tailored to Blume Health CI/CD Implementation)
+> "Yes, I have extensive, hands-on experience designing and operating enterprise mobile CI/CD pipelines. In **Blume Health**, our iOS builds were initially handled by **Xcode Cloud**. While Xcode Cloud worked for basic iOS builds, it created several critical architectural bottlenecks:
+> 1. **Siloed & Fragmented Releases:** Android had a separate build pipeline, preventing unified, simultaneous dual-platform releases.
+> 2. **Lack of Automated Semantic Versioning:** Bumping app versions and maintaining changelogs across both platforms required error-prone manual intervention.
+> 3. **Incompatibility with Shorebird Code Push:** Shorebird requires compiling with the Shorebird Flutter engine and recording an exact release binary hash (`shorebird release ios`). When Xcode Cloud ran a subsequent out-of-band archive, the resulting binary hash mismatched Shorebird's recorded state, breaking over-the-air (OTA) patch delivery!
 >
-> 1. **Lint & Static Analysis:** Runs `SwiftLint` and `flutter analyze` to enforce code quality gates.
-> 2. **Automated Testing:** Executes unit test suites via headless simulators (`fastlane scan`).
-> 3. **Code Signing Synchronization:** Uses **`fastlane match`** to store distribution certificates and provisioning profiles in an encrypted Git repository, ensuring identical, deterministic signing across all developer machines and CI agents.
-> 4. **Build & Archiving:** Compiles release `.ipa` or `.aab` artifacts (`fastlane gym`).
-> 5. **Distribution:** Automatically uploads signed builds to Apple TestFlight (`fastlane pilot`) and Firebase App Distribution for QA validation."
+> **The Solution: Centralized Trunk-Based Pipeline on GitHub Actions**
+> To solve this, I migrated our entire mobile release infrastructure to a centralized **GitHub Actions** engine operating on a trunk-based workflow (`main`):
+>
+> 1. **Automated Semantic Versioning via `release-please` (`release-please.yml`):**
+>    - Release Please monitors conventional commits (`feat:`, `fix:`, `chore:`) merged into `main`.
+>    - It automatically maintains an ongoing release pull request (`chore: release X.Y.Z`).
+>    - When merged, `release-please` automatically bumps `versionName` in `pubspec.yaml`, generates `CHANGELOG.md`, tags the release with `vX.Y.Z`, creates a formal GitHub Release, and automatically dispatches both Android and iOS production workflows simultaneously.
+>
+> 2. **Decoupled Versioning & Build Provenance:**
+>    - We separated marketing semver (`versionName`: `X.Y.Z`) from the store build number (`versionCode` / `CFBundleVersion`), which is generated dynamically in CI as `git rev-list --count HEAD`.
+>    - Every build injects compile-time `--dart-define` parameters: `APP_GIT_SHA=$(git rev-parse HEAD)`, `APP_BUILD`, `APP_ENV`, and `SENTRY_RELEASE`. This allows us to tie any Sentry crash report or backend HTTP header (`X-App-Commit`) directly back to the exact Git commit SHA that built it.
+>
+> 3. **Fully Automated Dual-Store Submissions:**
+>    - **Android (`android-build-production.yml`):** Builds the release AAB, uploads ProGuard/R8 mappings and Sentry debug symbols, and submits directly to Google Play's `production` track with 100% rollout.
+>    - **iOS (`ios-build-production.yml`):** Runs on macOS runners, authenticates via App Store Connect API keys, compiles and codesigns the release IPA, uploads it to App Store Connect, waits for processing, submits the build to App Review with automatic release after Apple approval, and uploads dSYMs to Sentry.
+>
+> 4. **Emergency Over-The-Air (OTA) Patching via Shorebird:**
+>    - Implemented dedicated patch workflows (`shorebird-ios-production-patch.yml` and `shorebird-android-production-patch.yml`).
+>    - When a critical production bug occurs in Dart runtime logic, any engineer can dispatch a patch workflow against an exact Shorebird-recorded release. The patch compiles the modified Dart AOT bytecode and pushes it to Shorebird servers. User devices download and apply the patch on their next app launch in under 5 minutes without submitting a new binary or waiting for Apple/Google app store approvals!"
 
 ---
 
